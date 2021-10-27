@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <div id="backgroudForm" class="col col-md-6 p-0">
+            <video class="img-responsive center-block" autoplay loop muted style="width:100%;height:100%;">
+                <source th:src="@{/videos/loan.mp4}" type="video/mp4">
+            </video>
+            <!--th:if="${author.picture == null}}"-->
+        </div>
+        <div class="col col-md-6 justify-content-center align-self-center">
+            <h5 class="text-center" th:text="${title}"></h5>
+            <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
+                  novalidate th:action="@{/loans/__${action}__}" th:object="${loan}">
+
+                <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
+                    <label class="mb-3">
+                        <input type="number" th:if="${action == 'saveModifications'}" th:name="id" th:field="*{id}" readonly required>
+                    </label><br>
+                    <label class="mb-3">Fecha de ingreso <input type="date" th:name="loanDate" th:field="*{loanDate}"></label><br>
+                    <label class="mb-3">Fecha de devolución <input type="date" th:name="returnDate"  th:field="*{returnDate}" ></label><br>
+                    <label class="mb-3" for="#book">Libro</label>
+                    <select name="book" id="book" th:with="book=*{book}">
+                        <option th:each="book : ${books}"
+                                th:value="${book.isbn}"
+                                th:text="${book.title}"
+                                th:selected="${loan.book != null} ? ${book.title} == *{book.title} : false">
+                        </option>
+                    </select><br>
+                    <label class="mb-3" for="#customer">Cliente</label>
+                    <select name="customer" id="customer" th:with="customer=*{customer}">
+                        <option th:each="customer : ${customers}"
+                                th:value="${customer.id}"
+                                th:text="${customer.lastName}+', '+${customer.name}"
+                                th:selected="${loan.customer != null} ? ${customer.id} == *{customer.id} : false"
+                        ></option>
+                    </select><br>
+                    <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar' : 'Guardar cambios'"></button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+
+</body>
+</html>

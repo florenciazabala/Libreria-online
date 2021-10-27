@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item item ">
+            <video class="img-responsive center-block" autoplay loop muted style="margin-bottom: 100px;width:100%;height:100%;">
+                <source th:src="@{/videos/carousel1.mp4}" type="video/mp4">
+            </video>
+        </div>
+        <div class="carousel-item item active">
+            <video class="img-responsive center-block" autoplay loop muted style="margin-bottom: 100px;width:100%;height:100%;">
+                <source th:src="@{/videos/carousel3.mp4}" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</div>
+<div class="container">
+<div class="row row-cols-sm-1 row-cols-md-6 mb-5 justify-content-center">
+    <div class="card m-2" style="width: 10rem">
+        <img th:src="@{/images/libro.jpg}" class="card-img-top cardIndex" alt="..." >
+        <div class="card-body">
+            <h5 class="card-title">Libros</h5>
+            <a href="/books/all" class="btn btn-primary">Ver listado</a>
+        </div>
+    </div>
+    <div class="card m-3" style="width: 10rem">
+        <img th:src="@{/images/autor.jpg}" class="card-img-top cardIndex" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Autores</h5>
+            <a href="/authors/all" class="btn btn-primary">Ver listado</a>
+        </div>
+    </div>
+    <div class="card m-3" style="width: 10rem">
+        <img th:src="@{/images/editorial.jpg}" class="card-img-top cardIndex" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Editoriales</h5>
+            <a href="#" class="btn btn-primary">Ver listado</a>
+        </div>
+    </div>
+    <div class="card m-3" style="width: 10rem">
+        <img th:src="@{/images/cliente.jpg}" class="card-img-top cardIndex" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Clientes</h5>
+            <a href="/customers/all" class="btn btn-primary">Ver listado</a>
+        </div>
+    </div>
+    <div class="card m-3" style="width: 10rem">
+        <img th:src="@{/images/prestamo.jpg}" class="card-img-top cardIndex" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">Prestamos</h5>
+            <a href="/loads/all" class="btn btn-primary">Ver listado</a>
+        </div>
+    </div>
+</div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+</body>
+</html>

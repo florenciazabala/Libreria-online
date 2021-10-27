@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+  <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid">
+  <div class="row">
+    <div id="backgroudForm" class="col col-md-6 p-0">
+      <img id="imageGenre" th:src="@{/images/historia.jpg}" class="img-fluid" alt="...">
+    </div>
+    <div class="col col-md-6 justify-content-center align-self-center">
+      <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
+            novalidate th:action="@{/books/__${action}__}" th:object="${book}">
+
+        <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formLibro">
+          <label class="mb-3 mt-3" >ISBN
+            <input type="number" name="isbn1" id="isbn1" max="999" class="example-popover isbn isbn3 text-center"
+                   th:field="*{isbn}" th:readonly="${book.isbn != null}" data-toggle="popover" data-img="/images/isbn.png" title="Formato ISBN" required >
+          </label><br>
+          <label class="mb-3">Título <input type="text" name="titulo" id="" th:field="*{title}" required> </label><br>
+          <label class="mb-3">Año <input type="number" name="año" id="" th:field="*{year}" required> </label><br>
+          <label class="mb-3" for="#genero">Genero</label>
+          <select name="genero" id="genero" th:with="genero=*{genre}">
+            <option th:each="genre : ${T(com.egg.library.util.Genre).values()}"
+                    th:value="${genre.valueFormat}"
+                    th:text="${genre.valueFormat}"
+                    th:selected="${book.genre != null} ? ${genre.valueFormat} == *{genre.valueFormat} : false"></option>
+          </select></br>
+
+          <label class="mb-3" for="#autor">Autor </label>
+          <select name="autor" class="oS" id="autor" th:with="autor=*{author}">
+            <option th:each="author : ${authors}"
+                    th:value="${author.name}"
+                    th:text="${author.name}"
+                    th:selected="${book.author != null} ? ${author.name} == *{author.name} : false"></option>
+            <option value="otro" class="oS">Otro</option><br>
+            <input type="text"  th:name="otherAuthor" th:id="otherAuthor" class="otro ms-3" maxlength="30">
+          </select><br>
+
+          <label class="mb-3" for="#editorial">Editorial</label>
+          <select name="editorial" class="oS" id="editorial" th:with="editorial=*{editorial}">
+            <option th:each="editorial : ${editorials}"
+                    th:value="${editorial.name}"
+                    th:text="${editorial.name}"
+                    th:selected="${book.editorial != null} ? ${editorial.name} == *{editorial.name} : false">
+                    </option>
+            <option value="otro" class="oS">Otro</option><br>
+            <input type="text" th:name="otherEditorial" th:id="otherEditorial" class="otro ms-3"  maxlength="30">
+          </select><br>
+
+          <hr>
+          <label class="mb-3" >Cantidad de ejemplares
+            <input type="number" name="copy" id="copy" max="999" value=1 th:field="*{copy}" required >
+          </label><br>
+          <label class="mb-3" >Ejemplares en préstamo
+            <input type="number" name="loanedcopy" id="loanedcopy" max="999" th:field="*{loanedCopy}" required >
+          </label><br>
+          <!--<select >
+            <option th:each="i : ${#numbers.sequence(0, #{form.copy})}" th:value="${i}" th:text="${i}"></option>
+          </select><br>-->
+          <hr>
+          <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar libro' : 'Guardar cambios'"></button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+
+<script th:inline="javascript">
+
+genero.addEventListener("change",()=>{
+    imageGenre.setAttribute("src",'/images/'+genero.selectedOptions[0].value+'.jpg')
+});
+
+$(document).ready(function(){
+	 $('[data-toggle="popover"]').popover({
+          //trigger: 'focus',
+		  trigger: 'hover',
+          html: true,
+          content: function () {
+				return '<img class="img-fluid" src="'+$(this).data('img') + '" />';
+          },
+          title: 'Toolbox'
+    })
+});
+/*----Select OTRO -->Desplegar input---*/
+
+$(document).ready(function(){
+    $('.otro').css("display", "none");
+    $('.oS').on('change',function(){
+        var selectedValue = $(this).val();
+        if(selectedValue == "otro"){
+        $(this).next().toggle('slow');
+        }
+        e.preventDefault();
+    },
+    function(e){
+        $('.otro').css("display", "none");
+        var selectedValue = $(this).val();
+        if(selectedValue == "otro"){
+        $(this).next().toggle('slow');
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+  <title>Books</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid text-center m-0 p-0" >
+  <img th:src="@{/images/Genre/__${book.genre}__ HEADER.jpg}" class="img-fluid" width="100%" id="containerImageHeader">
+  <h1  th:text="${book.title}" id="titleBookDetail"></h1>
+</div>
+
+<div class="row">
+  <div class="col col-md-4 text-center justify-content-center">
+    <img th:src="@{/images/book.png}" id="imageBookDetail" class="rounded-circle float-center cardIndex" style="width: 10rem;" >
+  </div>
+
+  <div class="col col-md-8 mt-5 align-self-center d-flex  justify-content-end">
+    <!--<a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook justify-self-end" ><div id="anim"></div></a>-->
+    <a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook justify-self-end" ><i class="fas fa-edit fa-2x mr-4" style="display: inline;"></i></a>
+    <a th:href="${book.discharged == true} ? @{/books/delete/__${book.isbn}__}:@{/books/discharge/__${book.isbn}__}" class="buttonBook justify-self-end"><i th:classappend="${book.discharged == true} ? 'fas fa-trash-alt fa-2x ' : 'fas fa-upload fa-2x '" class="mr-5"  style="display: inline;"></i></a>
+  </div>
+</div>
+
+<div class="row justify-content-center m-5 p-4">
+  <div class="col col-md-5 m-4 p-4 text-center" id="panelBookDetail">
+    <h6>Datos del libro</h6><br>
+    <div class="row justify-content-center">
+      <div class="col">
+        <table class="table table-bordered">
+          <tr>
+            <td>ISBN</td>
+            <td th:text="${book.isbn}"></td>
+          </tr>
+          <tr>
+            <td>Editorial</td>
+            <td th:text="${book.editorial.name}"></td>
+          </tr>
+          <tr>
+            <td>Género</td>
+            <td th:text="${book.genre.valueFormat}"></td>
+          </tr>
+          <tr>
+            <td>Ejemplares</td>
+            <td th:text="${book.avaibleCopy}+'/'+${book.copy}"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col col-md-6 m-4 p-4" id="panelAuthorDetail">
+    <div class="row m-2">
+      <div class="col col-md-4 align-content-center justify-content-end">
+        <div class="row justify-content-end">
+          <img th:src="@{/images/userDefault.jpg}"  class="rounded-circle float-end cardIndex" style="width: 6rem;" ><br>
+        </div>
+        <div class="row justify-content-end">
+          <a class="btn btn-primary mt-3" th:href="@{/authors/__${book.author.idAuthor}__}" style="width: 6rem;">Ver mas</a>
+        </div>
+      </div>
+      <div class="col col-md-8">
+        <h6 th:text="${book.author.name}"></h6>
+        <ul class="list-group">
+          <li th:each="book : ${book.author.books}" class="list-group-item">
+            <p th:text="${book.value}" style="display: inline-block;"></p>
+            <a th:href="@{/books/__${book.key}__}"><i class="fas fa-eye fa-lg ml-2"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="row justify-content-center mb-5" >
+    <div class="col col-md-10 m-5 p-5 text-center" id="panelLoadsDetail">
+      <h6>Préstamos</h6><br>
+      <div class="alert alert-secondary" role="alert" th:if="${loans.isEmpty()}">
+        <p>Todavía no hay préstamos cargados para este libro.<a th:href="@{/loans/create}">Ingresar préstamo.</a></p>
+      </div>
+      <table class="table  m-2 align-middle" th:unless="${loans.isEmpty()}">
+        <thead>
+        <tr class="text-center table-secondary">
+          <td></td>
+          <td>Cliente</td>
+          <td></td>
+          <td>Fecha vencimiento</td>
+          <td></td>
+        </tr>
+        </thead>
+        <tr class="text-center align-middle" th:each="loan : ${loans}">
+          <td>
+            <img th:src="@{/images/userDefault.jpg}" class="rounded-circle float-end cardIndex" style="width: 4rem;" ><br>
+          </td>
+          <td th:text="${loan.customer.lastName}+', '+${loan.customer.name}" class="align-middle"></td>
+          <td class="align-middle">
+            <a th:href="@{/customers/__${loan.customer.id}__}" class="buttonBook"><i class="fas fa-eye fa-lg"></i></a>
+          </td>
+          <td th:text="${#temporals.format(loan.returnDate,'dd/MM/yyyy')}" class="align-middle"></td>
+          <td class="align-middle">
+            <a th:href="@{/loans/__${loan.id}__}" class="buttonBook"><i class="far fa-file-alt fa-lg"></i></a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+<script src="/js/edit.json"></script>
+<script>
+var animation = bodymovin.loadAnimation({
+  container: document.getElementById('anim'),
+  renderer: 'svg',
+  loop: false,
+  autoplay: true,
+  path: "/js/edit.json"
+})
+
+</script>
+
+
+</body>
+</html>

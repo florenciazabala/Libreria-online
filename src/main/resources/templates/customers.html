@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Books</title>
+</head>
+<body id="customerListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid mt-5 mb-5">
+    <div class="row justify-content-center" style="min-height: 30rem;">
+        <div class="col-7 mt-5">
+            <div class="alert alert-secondary" role="alert" th:if="${customers.isEmpty()}">
+                <h5>Todavía no hay clientes cargados.<a th:href="@{/customers/create}">Ingresar cliente.</a></h5>
+            </div>
+            <div class="card mb-4 " th:each="customer : ${customers}">
+                <div class="row g-0" >
+                    <div class="col-md-1 align-self-center text-center">
+                        <img th:src="@{/images/userDefault.jpg}" id="imageCustomercard" class="rounded-circle float-start cardIndex" alt="Image book" >
+                    </div>
+                    <div class="col-md-5 align-self-center">
+                        <div class="card-body text-center">
+                            <h5 class="card-title" th:text="${customer.lastName}+', '+${customer.name}" id="bookTitle"></h5>
+                            <h6 th:text="'DNI '+${customer.document}" id="bookIsbn"></h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4 justify-content-end align-self-center">
+                        <table class="table table-borderless" id="tableBooks">
+                            <tr>
+                                <th class="p-0">Mail: </th>
+                                <td class="p-0" th:text="${customer.mail}"></td>
+                            </tr>
+                            <tr>
+                                <th class="p-0">Teléfono: </th>
+                                <td class="p-0" th:text="${customer.telephone}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-2 align-self-center">
+                        <a th:href="@{/customers/update/__${customer.id}__}" class="buttonBook"><i class="fas fa-edit fa-lg m-4" style="display: block;"></i></a>
+                        <a th:href="${customer.discharged == true} ? @{/customers/delete/__${customer.id}__}:@{/customers/discharge/__${customer.id}__}" class="buttonBook"><i th:classappend="${customer.discharged == true} ? 'fas fa-trash-alt fa-lg m-4' : 'fas fa-upload fa-lg m-4'" class="" style="display: block;"></i></a>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation example" class="">
+                <ul class="pagination  justify-content-center">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+    <footer th:replace="../static/layouts/layout :: footer"></footer>
+</body>
+
+</html>
