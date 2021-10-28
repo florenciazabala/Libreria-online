@@ -8,6 +8,8 @@ import com.egg.library.domain.service.BookService;
 import com.egg.library.domain.service.EditorialService;
 import com.egg.library.domain.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/books")
 public class BookController {
 
+
     @Autowired
     private BookService bookService;
 
@@ -37,9 +40,10 @@ public class BookController {
 
     @GetMapping(value = "/all")
     public ModelAndView showBooks(){
-        bookService.updatePercentGenre();
+
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAllBooks());
+        mav.addObject("checked",false);
         return mav;
     }
 
@@ -47,6 +51,21 @@ public class BookController {
     public ModelAndView showByGenre(@RequestParam("genero") String genero){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findByGenre(genero));
+        return mav;
+    }
+
+    @GetMapping("/dismiss")
+    public ModelAndView showDismissbooks(){
+        ModelAndView mav = new ModelAndView("books");
+        mav.addObject("books",  bookService.findDismissBooks());
+        return mav;
+    }
+
+    @GetMapping("/avaible")
+    public ModelAndView showAvaibleToLoan(){
+        ModelAndView mav = new ModelAndView("books");
+        mav.addObject("books",  bookService.findAvaibleBooks());
+        mav.addObject("checked",true);
         return mav;
     }
 
@@ -138,5 +157,11 @@ public class BookController {
     public RedirectView dischargeBook(@PathVariable Long isbn){
         bookService.discharge(isbn);
         return new RedirectView("/books/all");
+    }
+
+
+    @EventListener(ContextRefreshedEvent.class)
+    public void contextRefreshedEvent() {
+        bookService.updatePercentGenre();
     }
 }

@@ -44,6 +44,12 @@ public interface LibroDAO extends JpaRepository<Libro,Long> {
     @Query("SELECT l FROM Libro l WHERE l.editorial.id= :editorialId")
     List<Libro> findByEditorial(@Param("editorialId") Integer editorialId);
 
+    @Query("SELECT l FROM Libro l WHERE l.alta=0")
+    List<Libro> findDismissBooks();
+
+    @Query("SELECT l FROM Libro l WHERE l.ejemplaresRestantes>0")
+    List<Libro> findAvaiblesBooks();
+
     @Query(value = "SELECT (SELECT COUNT(l.isbn)  FROM libros l WHERE l.genero= :genero) / " +
             "T.total *100 FROM libros l " +
             "CROSS JOIN (SELECT COUNT(l.isbn) as total  FROM libros l) T " +

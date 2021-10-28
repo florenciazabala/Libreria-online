@@ -55,6 +55,15 @@ public class BookService {
                 .orElseThrow(()->new NoSuchElementException("The book with isbn '"+isbn+"' doesn't exists"));
     }
 
+    @Transactional(readOnly = true)
+    public List<BookVO> findDismissBooks(){
+        return bookVORepository.getDismissBooks();
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookVO> findAvaibleBooks(){
+        return bookVORepository.getAvaibleBooks();
+    }
 
     @Transactional
     public void create(Long isbn,String title,Integer year,String genre, String author, String editorial,Integer copy, Integer loanedCopy, String newAuthor,String newEditorial){

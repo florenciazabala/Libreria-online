@@ -66,6 +66,16 @@ public class LibroRepository implements BookVORepository {
     }
 
     @Override
+    public List<BookVO> getDismissBooks() {
+        return bookMapper.toBookVO(libroDAO.findDismissBooks());
+    }
+
+    @Override
+    public List<BookVO> getAvaibleBooks() {
+        return bookMapper.toBookVO(libroDAO.findAvaiblesBooks());
+    }
+
+    @Override
     public void updateBook(BookVO bookVO) {
         Libro libro = bookMapper.toLibro(bookVO);
         libroDAO.update(libro.getTitulo(),libro.getAnio(),libro.getEjemplares(),libro.getEjemplaresPrestados(),

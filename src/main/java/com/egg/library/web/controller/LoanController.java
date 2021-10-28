@@ -1,7 +1,6 @@
 package com.egg.library.web.controller;
 
 import com.egg.library.domain.BookVO;
-import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.LoanVO;
 import com.egg.library.domain.service.BookService;
 import com.egg.library.domain.service.CustomerService;
