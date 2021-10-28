@@ -26,14 +26,14 @@ public class AuthorController {
 
     @GetMapping(value = "/all")
     public ModelAndView showAuthors(){
-        ModelAndView mav = new ModelAndView("authors2");
+        ModelAndView mav = new ModelAndView("authors");
         mav.addObject("authors",  authorService.findAllAuthors());
         return mav;
     }
 
     @GetMapping (value = "/{id}")
     public ModelAndView shearchById(@PathVariable Integer id){
-        ModelAndView mav = new ModelAndView("authors2");
+        ModelAndView mav = new ModelAndView("authors");
         List<AuthorVO> authorVOS = new ArrayList<>();
         authorVOS.add(authorService.findById(id));
         mav.addObject("authors", authorVOS );
