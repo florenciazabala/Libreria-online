@@ -17,6 +17,10 @@ public class AuthorService {
     @Autowired
     private AuthorVORepository authorVORepository;
 
+    public AuthorService(AuthorVORepository authorVORepository) {
+        this.authorVORepository = authorVORepository;
+    }
+
     private final Boolean DISCHARGED = Boolean.TRUE;
     @Transactional
     public void createAuthor(String name){
