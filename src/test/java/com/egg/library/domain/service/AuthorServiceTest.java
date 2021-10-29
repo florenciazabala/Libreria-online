@@ -3,9 +3,12 @@ package com.egg.library.domain.service;
 import com.egg.library.domain.AuthorVO;
 import com.egg.library.domain.repository.AuthorVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 
 import java.util.ArrayList;
@@ -13,29 +16,45 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
 class AuthorServiceTest {
 
-    static AuthorVORepository authorVORepository;
-    static AuthorService authorService;
+    @Mock
+    private AuthorVORepository authorVORepository;
 
-    @BeforeAll
-    static void setUp() {
-        authorVORepository = Mockito.mock(AuthorVORepository.class);
-        authorService = new AuthorService(authorVORepository);
+    @InjectMocks
+    private AuthorService authorService;
+
+    List<AuthorVO> authors;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        authors = getAuthorsLists();
     }
 
-    @Test(expected = FieldAlreadyExistException.class)
+    public List<AuthorVO> getAuthorsLists(){
+        List<AuthorVO> authors = new ArrayList<>();
+        authors.add(new AuthorVO(1,"Cortazar",true));
+        authors.add(new AuthorVO(2,"Borges",false));
+        authors.add(new AuthorVO(3,"Ray Bradbury",true));
+        authors.add(new AuthorVO(4,"Stephen King",true));
+        return authors;
+    }
+
+    @Test
     void createAuthor() {
-        String name ="Cortazar";
-        Mockito.when(authorVORepository.existsByName(name)).thenReturn(true);
+        String name = "Cortazar";
+        Mockito.when(authorVORepository.existsByName(any(String.class))).thenReturn(true);
         FieldAlreadyExistException myException = null;
         try {
             authorService.createAuthor(name);
         } catch (FieldAlreadyExistException e) {
             myException = e;
         }
-        assertEquals(myException.getMessage(), "The author with name '"+name+"' already exists");
+        assertEquals(myException.getMessage(), "Conflict Exception (409). Field Already Exist Exception . The author with name '"+name+"' already exists");
+        //assertEquals(myException.getClass(), FieldAlreadyExistException.class);
     }
 
     @Test
@@ -51,17 +70,12 @@ class AuthorServiceTest {
     @Test
     void findByName() {
     }
-    /*
-    @Test
-    void findById() {
-        Mockito.when(authorVORepository.getById(3)).thenReturn(new AuthorVO(3,"Ray Bradbury",true);
-        authorVORepository.getById(3);
-    }*/
+
 
     @Test
     void findById_when_author_find_is_null() {
         Optional<AuthorVO> authorVO = Optional.empty();
-        Mockito.when(authorVORepository.getById(3)).thenReturn(authorVO);
+        Mockito.when(authorVORepository.getById(any(Integer.class))).thenReturn(authorVO);
         Exception myException = null;
         try {
             authorService.findById(3);
@@ -70,18 +84,19 @@ class AuthorServiceTest {
         }
         assertEquals(myException.getMessage(), "The author with id '3' doesn't exists");
     }
+
     @Test
     void findById_when_author_is_find() {
-        Mockito.when(authorVORepository.getById(2)).thenReturn(Optional.of(new AuthorVO(2,"Ray Bradbury",true)));
+        Mockito.when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(2)));
         Exception myException = null;
-        assertEquals(new AuthorVO(2,"Ray Bradbury",true), authorService.findById(2));
+        assertEquals(authors.get(2), authorService.findById(2));
     }
 
     @Test
     void findById_when_find_a_list() {
-        Mockito.when(authorVORepository.getById(2)).thenReturn(Optional.of(new AuthorVO(2,"Ray Bradbury",true)));
+        Mockito.when(authorVORepository.getById(2)).thenReturn(Optional.of(authors.get(2)));
         Exception myException = null;
-        assertEquals(new AuthorVO(2,"Ray Bradbury",true), authorService.findById(2));
+        assertEquals(authors.get(2), authorService.findById(2));
     }
 
     @Test
@@ -92,13 +107,6 @@ class AuthorServiceTest {
     void discharge() {
     }
 
-    public List<AuthorVO> getAuthorsLists(){
-        List<AuthorVO> authors = new ArrayList<>();
-        authors.add(new AuthorVO(1,"Cortazar, julio",true));
-        authors.add(new AuthorVO(2,"Borges",false));
-        authors.add(new AuthorVO(3,"Ray Bradbury",true));
-        authors.add(new AuthorVO(4,"Stephen King",true));
-        return authors;
-    }
+
 
 }
