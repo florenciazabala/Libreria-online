@@ -4,11 +4,11 @@ import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.repository.PictureVORepository;
 import com.egg.library.exeptions.ConflictException;
 import com.egg.library.exeptions.FieldInvalidException;
-import com.egg.library.perisitence.entity.Foto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,15 +38,16 @@ public class PictureService {
         }
 
         String finalPath = createPath(multipartFile,folderLocation,id,name);
-
+        String relativPath =finalPath.substring(25);
         try {
             byte[] bytes = multipartFile.getBytes();
             Path path = Paths.get(finalPath);
             Files.write(path, bytes);
 
+
             pictureVO.setMime(multipartFile.getContentType());
             pictureVO.setName(multipartFile.getName());
-            pictureVO.setPath(finalPath);
+            pictureVO.setPath(relativPath);
             pictureVO.setDischarge(DISCHARGE);
             pictureVORepository.create(pictureVO);
             return pictureVO;
@@ -68,5 +69,38 @@ public class PictureService {
         return finalPath;
     }
 
+    public PictureVO updatePicture(PictureVO pictureVO,String folderLocation, String id, String name, MultipartFile multipartFile){
 
+        if (multipartFile.isEmpty()) {
+            throw new FieldInvalidException("Is not selecting the image to upload");
+        }
+
+        String fileName = "src/main/resources/static"+pictureVO.getPath();
+
+        Path path = Paths.get(fileName);
+        File f = path.toFile();
+        if (f.exists()) {
+            f.delete();
+        }
+
+        String finalPath = createPath(multipartFile,folderLocation,id,name);
+        String relativPath =finalPath.substring(25);
+
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            path = Paths.get(finalPath);
+            Files.write(path, bytes);
+
+            this.pictureVO= pictureVO;
+            pictureVO.setMime(multipartFile.getContentType());
+            pictureVO.setName(multipartFile.getName());
+            pictureVO.setPath(relativPath);
+            pictureVO.setDischarge(DISCHARGE);
+            pictureVORepository.create(pictureVO);
+            return pictureVO;
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new ConflictException("Error during upload: " + multipartFile.getOriginalFilename());
+        }
+    }
 }
