@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 class AuthorServiceTest {
 
@@ -46,7 +47,7 @@ class AuthorServiceTest {
     @Test
     void createAuthor() {
         String name = "Cortazar";
-        Mockito.when(authorVORepository.existsByName(any(String.class))).thenReturn(true);
+        when(authorVORepository.existsByName(any(String.class))).thenReturn(true);
         FieldAlreadyExistException myException = null;
         try {
             authorService.createAuthor(name);
@@ -63,7 +64,7 @@ class AuthorServiceTest {
 
     @Test
     void findAllAuthors() {
-        Mockito.when(authorVORepository.getAll()).thenReturn(getAuthorsLists());
+        when(authorVORepository.getAll()).thenReturn(getAuthorsLists());
         authorService.findAllAuthors();
     }
 
@@ -71,11 +72,11 @@ class AuthorServiceTest {
     void findByName() {
     }
 
-
+    //Find by id
     @Test
     void findById_when_author_find_is_null() {
         Optional<AuthorVO> authorVO = Optional.empty();
-        Mockito.when(authorVORepository.getById(any(Integer.class))).thenReturn(authorVO);
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(authorVO);
         Exception myException = null;
         try {
             authorService.findById(3);
@@ -87,26 +88,90 @@ class AuthorServiceTest {
 
     @Test
     void findById_when_author_is_find() {
-        Mockito.when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(2)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(2)));
         Exception myException = null;
         assertEquals(authors.get(2), authorService.findById(2));
     }
 
+    //Delete
+
     @Test
-    void findById_when_find_a_list() {
-        Mockito.when(authorVORepository.getById(2)).thenReturn(Optional.of(authors.get(2)));
-        Exception myException = null;
-        assertEquals(authors.get(2), authorService.findById(2));
+    void delete_when_id_does_not_exists() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.empty());
+        Exception exception = null;
+        try {
+            authorService.delete(id);
+        }catch (Exception e){
+            exception = e;
+        }
+        assertEquals(exception.getMessage(),"Conflict Exception (409). Field Already Exist Exception . The author with id '"+id+"' doesn't exists");
     }
 
     @Test
-    void delete() {
+    void delete_when_id_does_not_exists_2() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.empty());
+        Exception exception = assertThrows(FieldAlreadyExistException.class,()->{
+            authorService.delete(id);
+        });
+
+        String expectedMessage = "The author with id '"+id+"' doesn't exists";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void discharge() {
+    void delete_set_discharged_false_when_its_true() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(0)));
+        AuthorVO authorVO = authorVORepository.getById(id).get();
+        authorService.delete(id);
+        assertFalse(authorVO.getDischarged());
     }
 
+    @Test
+    void delete_keep_discharged_false_when_its_false() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        AuthorVO authorVO = authorVORepository.getById(id).get();
+        authorService.delete(id);
+        assertFalse(authorVO.getDischarged());
+    }
 
+    //Discharge
+
+    @Test
+    void discharge_when_id_does_not_exists() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.empty());
+        Exception exception = assertThrows(FieldAlreadyExistException.class,()->{
+            authorService.discharge(id);
+        });
+
+        String expectedMessage = "The author with id '"+id+"' doesn't exists";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void discharge_set_discharged_true_when_its_false() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        AuthorVO authorVO = authorVORepository.getById(id).get();
+        authorService.discharge(id);
+        assertTrue(authorVO.getDischarged());
+    }
+
+    @Test
+    void discharge_keep_discharged_true_when_its_true() {
+        Integer id =1;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        AuthorVO authorVO = authorVORepository.getById(id).get();
+        authorService.discharge(id);
+        assertTrue(authorVO.getDischarged());
+    }
 
 }
