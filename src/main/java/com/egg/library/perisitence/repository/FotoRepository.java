@@ -32,4 +32,5 @@ public class FotoRepository implements PictureVORepository {
     public Optional<PictureVO> getById(Integer id) {
         return fotoDAO.findById(id).map(foto -> pictureMapper.toPictureVo(foto));
     }
+
 }

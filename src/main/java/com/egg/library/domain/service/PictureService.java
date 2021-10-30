@@ -1,0 +1,72 @@
+package com.egg.library.domain.service;
+
+import com.egg.library.domain.PictureVO;
+import com.egg.library.domain.repository.PictureVORepository;
+import com.egg.library.exeptions.ConflictException;
+import com.egg.library.exeptions.FieldInvalidException;
+import com.egg.library.perisitence.entity.Foto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+@Service
+public class PictureService {
+
+    @Autowired
+    private PictureVORepository pictureVORepository;
+
+    @Autowired
+    private PictureVO pictureVO;
+
+    /*
+    public final String AUTHORS_UPLOADED_FOLDER ="images/authors/";
+    public final String BOOKS_UPLOADED_FOLDER ="images/books/";
+    public final String CUSTOMERS_UPLOADED_FOLDER ="images/customers/";*/
+    public final Boolean DISCHARGE = Boolean.TRUE;
+
+
+    public PictureVO createPicture(String folderLocation, String id, String name, MultipartFile multipartFile){
+
+        if (multipartFile.isEmpty()) {
+            throw new FieldInvalidException("Is not selecting the image to upload");
+        }
+
+        String finalPath = createPath(multipartFile,folderLocation,id,name);
+
+        try {
+            byte[] bytes = multipartFile.getBytes();
+            Path path = Paths.get(finalPath);
+            Files.write(path, bytes);
+
+            pictureVO.setMime(multipartFile.getContentType());
+            pictureVO.setName(multipartFile.getName());
+            pictureVO.setPath(finalPath);
+            pictureVO.setDischarge(DISCHARGE);
+            pictureVORepository.create(pictureVO);
+            return pictureVO;
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new ConflictException("Error during upload: " + multipartFile.getOriginalFilename());
+        }
+    }
+
+    public String createPath(MultipartFile multipartFile,String folder, String id, String name){
+
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        String dateName = dateFormat.format(date);
+        System.out.println(dateName);
+        String fileName = id+"-"+name+"-" + dateName + "." + multipartFile.getContentType().split("/")[1];
+        String finalPath = folder + fileName;
+
+        return finalPath;
+    }
+
+
+}
