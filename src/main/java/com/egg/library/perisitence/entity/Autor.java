@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name="autores")
 public final class Autor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,7 +23,10 @@ public final class Autor {
     private Boolean alta;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "autor",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "autor",fetch = FetchType.LAZY)
     private List<Libro> libros;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Foto foto;
 
 }

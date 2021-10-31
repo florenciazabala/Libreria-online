@@ -7,52 +7,44 @@
 <nav th:replace="../static/layouts/layout :: navbar"></nav>
 <div class="container-fluid mt-5 mb-5">
     <div class="row justify-content-center" style="min-height: 30rem;">
-        <div class="col-8 mb-2 containerListAuthors" >
+        <div class="col-10 mb-2" >
             <div class="alert alert-secondary" role="alert" th:if="${authors.isEmpty()}">
-                <p>Todavía no hay autores cargados.<a th:href="@{/authors/create}">Ingresar libro.</a></p>
+                <h5>Todavía no hay autores cargados.<a th:href="@{/authors/create}">Ingresar libro.</a></h5>
             </div>
-            <table class="table" th:unless="${authors.isEmpty()}">
-                <thead class="table-dark">
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <div th:each="author : ${authors}">
-                <tbody>
-                <tr>
-                    <th scope="row"  th:text="${author.idAuthor}"></th>
-                    <td  th:text="${author.name}"></td>
-                    <td>
-                        <a th:href="@{/authors/update/__${author.idAuthor}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
-                    </td>
-                    <td>
-                        <a th:href="${author.discharged == true} ? @{/authors/delete/__${author.idAuthor}__}:@{/authors/discharge/__${author.idAuthor}__}" class="buttonBook"><i th:classappend="${author.discharged == true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
-                    </td>
-                    <td>
-                       <a href="#" class="buttonBook" th:onclick="'javascript:seeHidden(' + ${author.idAuthor} + ')'"><i class="fas fa-book fa-lg" id="iconShow"></i></a>
-                    </td>
-                </tr>
-                <tr th:if="${author.books.isEmpty()}" th:id="${author.idAuthor}" class="hidden">
-                    <td scope="row" colspan="5" >Aún no hay libros cargados</td>
-                </tr>
+            <div class="row row-cols-md-4">
+                <div class="col-md-3" th:each="author : ${authors}">
+                    <div class="card mb-3" style="width: 18rem;">
+                        <img th:unless="${author.picture == null}" th:src="@{__${author.picture.path}__}">
+                        <img th:if="${author.picture == null }" th:src="@{/images/userDefault.jpg}">
+                        <!--<img th:src="${(author.picture != null AND !#strings.isEmpty(author.picture)) ? author.picture.path : '/images/userDefault.jpg'" class="card-img-top" alt="...">-->
 
-                <tbody th:id="${author.idAuthor}" class="hidden" colspan="5">
-                    <tr th:each="book : ${author.books}"  colspan="5">
-                    <td colspan="5">
-                        <p th:text="${book.value}" style="display: inline;" class="me-5"> </p>
-                        <a th:href="@{/books/__${book.key}__}" class="buttonBook justify-items-end"><i class="fas fa-eye fa-lg"></i></a>
-                    </td><br>
-                    </tr>
-                </tbody>
-
-                </tbody>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td >
+                                        <h6 class="card-title" th:text="${author.name}" style="display: inline-block;"></h6>
+                                    </td>
+                                    <td class="justify-content-end">
+                                        <a th:href="@{/authors/update/__${author.idAuthor}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
+                                        <a th:href="${author.discharged == true} ? @{/authors/delete/__${author.idAuthor}__}:@{/authors/discharge/__${author.idAuthor}__}" class="buttonBook"><i th:classappend="${author.discharged == true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <a href="#" class="buttonBook" th:onclick="'javascript:seeHidden(' + ${author.idAuthor} + ')'">Ver libros  <i class="fas fa-chevron-down fa-lg ml-2" th:id="__${author.idAuthor}__iconShow"></i></a>
+                        </div>
+                        <ul class="list-group list-group-flush hidden"  th:id="${author.idAuthor}">
+                            <li class="list-group-item" th:if="${author.books.isEmpty()}" th:id="${author.idAuthor}">
+                                <p>Aún no hay libros cargados</p>
+                            </li>
+                            <li class="list-group-item" th:each="book : ${author.books}">
+                                <p th:text="${book.value}" style="display: inline;" class="me-5"> </p>
+                                <a th:href="@{/books/__${book.key}__}" class="buttonBook justify-items-end"><i class="fas fa-eye fa-lg ml-2"></i></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </table>
-        </div>
+                </div>
+            </div>
     </div>
 </div>
 <footer th:replace="../static/layouts/layout :: footer"></footer>
@@ -60,10 +52,14 @@
     function seeHidden(id) {
         var button = id;
         var x = document.getElementById(""+button+"");
+        var icon = document.getElementById(id+"iconShow");
         if (x.style.display === "none") {
           x.style.display = "table-row";
+          icon.className = "fas fa-chevron-up fa-lg ml-2";
+
         } else {
           x.style.display = "none";
+          icon.className = "fas fa-chevron-down fa-lg ml-2";
         }
     }
 </script>

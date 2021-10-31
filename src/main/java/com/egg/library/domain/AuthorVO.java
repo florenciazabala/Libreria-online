@@ -15,4 +15,5 @@ public class AuthorVO {
     private String name;
     private Boolean discharged;
     private Map<Long,String> books;
+    private PictureVO picture;
 }

@@ -35,6 +35,10 @@
                         <input type="number" th:if="${action == 'saveModifications'}" th:name="idAuthor" th:field="*{idAuthor}" readonly required>
                     </label><br>
                     <label class="mb-3">Nombre <input type="text" th:name="name" id="name" th:field="*{name}" required> </label><br>
+                    <div class="mb-3" >
+                        <label for="picture" class="form-label">Foto del autor</label>
+                        <input class="form-control" type="file" id="picture" th:name="picture" th:field="*{picture}">
+                    </div>
                     <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar' : 'Guardar cambios'"></button>
                 </fieldset>
             </form>

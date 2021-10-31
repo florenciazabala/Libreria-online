@@ -1,12 +1,15 @@
 package com.egg.library.domain.service;
 
 import com.egg.library.domain.AuthorVO;
+import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.repository.AuthorVORepository;
+import com.egg.library.domain.repository.PictureVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.util.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -16,6 +19,9 @@ public class AuthorService {
 
     @Autowired
     private AuthorVORepository authorVORepository;
+
+    @Autowired
+    private PictureService pictureService;
 
     private final Boolean DISCHARGED = Boolean.TRUE;
     @Transactional
@@ -28,6 +34,15 @@ public class AuthorService {
         authorVO.setName(Validations.formatNames(name));
         authorVO.setDischarged(DISCHARGED);
         authorVORepository.create(authorVO);
+    }
+
+    @Transactional
+    public void updatePicture(String pathPicture,Integer id){
+        AuthorVO authorVO = authorVORepository.getById(id)
+                .orElseThrow(()-> new FieldAlreadyExistException("The author with id '"+id+"' doesn't exists"));
+        PictureVO pictureVO = pictureService.getByPath(pathPicture);
+        authorVO.setPicture(pictureVO);
+        authorVORepository.updateFoto(pictureVO,authorVO.getIdAuthor());
     }
 
     @Transactional

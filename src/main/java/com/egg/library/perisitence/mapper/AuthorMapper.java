@@ -12,27 +12,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring",uses={BookMapper.class})
+@Mapper(componentModel = "spring",uses={BookMapper.class,PictureMapper.class})
 public interface AuthorMapper {
     @Mappings({
             @Mapping(source = "id",target = "idAuthor"),
             @Mapping(source ="nombre",target = "name"),
             @Mapping(source = "alta", target = "discharged"),
-            @Mapping(source = "libros", target = "books")
+            @Mapping(source = "libros", target = "books"),
+            @Mapping(source = "foto",target = "picture")
     })
     AuthorVO toAuthorVO(Autor autor);
     List<AuthorVO> toAuthorVO(List<Autor> autor);
 
     @InheritInverseConfiguration
-    @Mapping(target="libros",ignore = true)
+    @Mapping(target="libros", ignore = true)
     Autor toAutor(AuthorVO authorVO);
     List<Autor> toAutor(List<AuthorVO> authorVO);
 
 
     default Map<Long,String> fromBook(List<Libro> libros) {
         Map<Long,String> books = new HashMap<>();
-        for (Libro libro : libros){
-            books.put(libro.getIsbn(),libro.getTitulo());
+        if(libros != null){
+            for (Libro libro : libros){
+                books.put(libro.getIsbn(),libro.getTitulo());
+            }
         }
         return books;
     }

@@ -1,10 +1,13 @@
 package com.egg.library.perisitence.repository;
 
 import com.egg.library.domain.AuthorVO;
+import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.repository.AuthorVORepository;
 import com.egg.library.perisitence.DAO.AutorDAO;
 import com.egg.library.perisitence.entity.Autor;
+import com.egg.library.perisitence.entity.Foto;
 import com.egg.library.perisitence.mapper.AuthorMapper;
+import com.egg.library.perisitence.mapper.PictureMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,10 +23,14 @@ public class AutorRepository implements AuthorVORepository {
     @Autowired
     private AuthorMapper authorMapper;
 
+    @Autowired
+    private PictureMapper pictureMapper;
+
     @Override
     public void create(AuthorVO authorVO) {
         autorDAO.save(authorMapper.toAutor(authorVO));
     }
+
 
     @Override
     public List<AuthorVO> getAll() {
@@ -39,6 +46,12 @@ public class AutorRepository implements AuthorVORepository {
     public void update(AuthorVO authorVO) {
         Autor autor = authorMapper.toAutor(authorVO);
         autorDAO.update(autor.getNombre(),autor.getAlta(),autor.getId());
+    }
+
+    @Override
+    public void updateFoto(PictureVO pictureVO, Integer id) {
+        Foto foto = pictureMapper.toFoto(pictureVO);
+        autorDAO.updateFoto(foto,id);
     }
 
     @Override

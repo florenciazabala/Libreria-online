@@ -25,12 +25,17 @@ public class FotoRepository implements PictureVORepository {
 
     @Override
     public void update(PictureVO pictureVO) {
-        fotoDAO.update(pictureVO.getName(),pictureVO.getMime(),pictureVO.getPath(),pictureVO.getDischarge());
+        fotoDAO.update(pictureVO.getName(),pictureVO.getMime(),pictureVO.getPath(),pictureVO.getDischarge(),pictureVO.getId());
     }
 
     @Override
     public Optional<PictureVO> getById(Integer id) {
         return fotoDAO.findById(id).map(foto -> pictureMapper.toPictureVo(foto));
+    }
+
+    @Override
+    public Optional<PictureVO> getByPath(String path) {
+        return fotoDAO.findByRuta(path).map(foto -> pictureMapper.toPictureVo(foto));
     }
 
 }

@@ -22,7 +22,7 @@ public final class Editorial {
     private Boolean alta;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "editorial",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "editorial",fetch = FetchType.LAZY)
     private List<Libro> libros;
 
 
