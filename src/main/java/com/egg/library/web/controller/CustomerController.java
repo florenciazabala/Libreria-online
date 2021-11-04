@@ -1,7 +1,9 @@
 package com.egg.library.web.controller;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.UserVO;
 import com.egg.library.domain.service.CustomerService;
+import com.egg.library.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping(value = "/all")
     public ModelAndView showCustomers(){
@@ -53,14 +58,18 @@ public class CustomerController {
 
     @PostMapping(value = "/save")
     public RedirectView saveCustomer(@RequestParam Long document,@RequestParam String name,@RequestParam String lastName,
-                                     @RequestParam String mail, @RequestParam String telephone){
-        customerService.create(document,name,lastName,mail,telephone);
+                                     @RequestParam String mail, @RequestParam String telephone,
+                                     @RequestParam String username, @RequestParam String password){
+        customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password));
         return new RedirectView("/customers/all");
     }
 
     @PostMapping(value = "/saveModifications")
     public RedirectView saveModificationsCustomer(@RequestParam Integer id,@RequestParam Long document,@RequestParam String name,@RequestParam String lastName,
-                                     @RequestParam String mail, @RequestParam String telephone){
+                                     @RequestParam String mail, @RequestParam String telephone,
+                                                  @RequestParam String username, @RequestParam String password){
+
+        userService.update(username,mail,password);
         customerService.update(id,document,name,lastName,mail,telephone);
         return new RedirectView("/customers/all");
     }

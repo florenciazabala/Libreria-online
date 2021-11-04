@@ -32,4 +32,7 @@ public final class Cliente {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Prestamo> prestamos;
+
+    @OneToOne
+    private Usuario usuario;
 }

@@ -29,7 +29,7 @@ public class ClienteRepository implements CustomerVORepository {
     public void updateCustomer(CustomerVO customerVO) {
         Cliente cliente = customerMapper.toCliente(customerVO);
         clienteDAO.update(cliente.getDocumento(),cliente.getNombre(),cliente.getApellido(),cliente.getMail(),cliente.getTelefono(),
-                cliente.getAlta(),cliente.getId());
+                cliente.getAlta(),cliente.getUsuario(),cliente.getId());
     }
 
     @Override

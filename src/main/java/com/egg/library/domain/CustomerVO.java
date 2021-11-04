@@ -26,4 +26,5 @@ public final class CustomerVO {
     private String telephone;
     private Boolean discharged;
     private Map<Integer,String> loans;
+    private UserVO user;
 }

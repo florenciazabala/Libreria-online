@@ -1,6 +1,7 @@
 package com.egg.library.domain.service;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.util.Validations;
@@ -16,6 +17,7 @@ public class CustomerService {
 
     @Autowired
     private CustomerVORepository customerVORepository;
+
 
     @Autowired
     CustomerVO customerVO;
@@ -33,11 +35,11 @@ public class CustomerService {
     private final Boolean DISCHARGED = Boolean.TRUE;
 
     @Transactional
-    public void create(Long document,String name,String lastName,String mail,String telephone){
+    public void create(Long document,String name,String lastName,String mail,String telephone,UserVO user){
         if(customerVORepository.getByDocument(document).isPresent()){
             throw new FieldAlreadyExistException("The client with document'"+document+"' already exists");
         }
-        setDates(document,name,lastName,mail,telephone);
+        setDates(document,name,lastName,mail,telephone,user);
         customerVORepository.createCustomer(customerVO);
     }
 
@@ -46,11 +48,12 @@ public class CustomerService {
         customerVO = customerVORepository.getById(id)
                 .orElseThrow(()-> new NoSuchElementException("The client with id '"+id+"' doesn't exists"));
 
-        setDates(document,name,lastName,mail,telephone);
+        setDates(document,name,lastName,mail,telephone,customerVO.getUser());
         customerVORepository.updateCustomer(customerVO);
     }
 
-    public void setDates(Long document,String name,String lastName,String mail,String telephone){
+    public void setDates(Long document,String name,String lastName,String mail,String telephone,UserVO user){
+
         Validations.validDocument(document);
         Validations.validString(name);
         Validations.validString(lastName);
@@ -62,6 +65,7 @@ public class CustomerService {
         customerVO.setMail(mail);
         customerVO.setTelephone(telephone);
         customerVO.setDischarged(DISCHARGED);
+        customerVO.setUser(user);
     }
 
     @Transactional
