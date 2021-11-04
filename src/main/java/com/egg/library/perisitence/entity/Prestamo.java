@@ -2,14 +2,19 @@ package com.egg.library.perisitence.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name="prestamos")
+@EntityListeners(AuditingEntityListener.class)
 public final class Prestamo {
 
     @Id
@@ -28,4 +33,11 @@ public final class Prestamo {
     @JoinColumn(name="cliente_id", referencedColumnName = "id")
     @ManyToOne
     private Cliente cliente;
+
+    @CreatedDate
+    @Column( updatable = false)
+    private LocalDateTime creacion;
+
+    @LastModifiedDate
+    private LocalDateTime modificacion;
 }
