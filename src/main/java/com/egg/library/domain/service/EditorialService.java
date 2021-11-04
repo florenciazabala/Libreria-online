@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class EditorialService {
@@ -53,7 +54,22 @@ public class EditorialService {
     }
 
     @Transactional
+    public void discharge(Integer id){
+        EditorialVO editorialVO= editorialVORepository.getById(id)
+                .orElseThrow(()-> new FieldAlreadyExistException("The editorial with id '"+id+"' doesn't exists"));
+        editorialVO.setDischarged(DISCHARGED);
+        editorialVORepository.update(editorialVO);
+    }
+
+    @Transactional
     public EditorialVO findByName(String name){
         return editorialVORepository.getByName(name);
+    }
+
+    @Transactional
+    public EditorialVO findById(Integer id){
+        return editorialVORepository.getById(id).orElseThrow(
+                () -> new NoSuchElementException("The editorial wiyh id '"+id+"' doesn't exists")
+        );
     }
 }

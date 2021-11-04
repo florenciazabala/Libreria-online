@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +15,6 @@ public class EditorialVO {
     @NotEmpty(message = "Field 'name' cant't be empty")
     private String name;
     private Boolean discharged;
-    private List<String> books;
+    private Map<Long,String> books;
 
 }

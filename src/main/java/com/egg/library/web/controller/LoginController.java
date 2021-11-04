@@ -73,7 +73,6 @@ public class LoginController {
     public RedirectView saveCustomer(@RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
                                      @RequestParam String mail, @RequestParam String telephone,
                                      @RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes){
-        System.out.println("DOCUMENT: "+document);
 
         RedirectView redirectView = new RedirectView("/login");
         try{

@@ -8,7 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper(componentModel = "spring",uses={BookMapper.class})
 public interface EditorialMapper {
@@ -26,7 +28,11 @@ public interface EditorialMapper {
     Editorial toEditorial(EditorialVO editorialVO);
     List<Editorial> toEditorial(List<EditorialVO> editorialVO);
 
-    default String fromBook(Libro libro) {
-        return libro == null ? null : libro.getTitulo();
+    default Map<Long,String> fromBook(List<Libro> libros) {
+        Map<Long,String> books = new HashMap<>();
+        for (Libro libro : libros){
+            books.put(libro.getIsbn(),libro.getTitulo());
+        }
+        return books;
     }
 }

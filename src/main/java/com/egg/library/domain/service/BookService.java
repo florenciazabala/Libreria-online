@@ -50,6 +50,11 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
+    public List<BookVO> findByEditorial(Integer authorId){
+        return bookVORepository.getByEditorial(authorId);
+    }
+
+    @Transactional(readOnly = true)
     public BookVO findByIsbn(Long isbn){
         return bookVORepository.getByIsbn(isbn)
                 .orElseThrow(()->new NoSuchElementException("The book with isbn '"+isbn+"' doesn't exists"));

@@ -61,7 +61,7 @@ public class LibroRepository implements BookVORepository {
     }
 
     @Override
-    public List<BookVO> getByTEditorial(Integer editorialId) {
+    public List<BookVO> getByEditorial(Integer editorialId) {
         return bookMapper.toBookVO(libroDAO.findByEditorial(editorialId));
     }
 
