@@ -40,7 +40,7 @@ class LoanServiceTest {
     public List<LoanVO> getLoansList(){
         List<LoanVO> loans = new ArrayList<>();
         BookVO book = new BookVO(2342634263426L,"Crónicas marcianas",1950, Genre.CUENTO,3,2,1,true,new AuthorVO(),new EditorialVO(),null);
-        CustomerVO customerVO=new CustomerVO(1,39455376L,"Juan","Perez","juanperez@gmail.com","1168148261",true,null);
+        CustomerVO customerVO=new CustomerVO(1,39455376L,"Juan","Perez","juanperez@gmail.com","1168148261",true,null,null);
         BookVO book2 = new BookVO(2342634263430L,"Rayuela",1970,Genre.NOVELA,2,2,0,true,new AuthorVO(),new EditorialVO(),null);
         loans.add(new LoanVO(1,LocalDate.parse("12/10/2021", DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     LocalDate.parse("16/10/2021", DateTimeFormatter.ofPattern("dd/MM/yyyy")),true,
