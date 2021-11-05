@@ -3,6 +3,7 @@ package com.egg.library.web.controller;
 
 import com.egg.library.domain.AuthorVO;
 import com.egg.library.domain.BookVO;
+import com.egg.library.domain.EditorialVO;
 import com.egg.library.domain.LoanVO;
 import com.egg.library.domain.service.AuthorService;
 import com.egg.library.domain.service.BookService;
@@ -117,15 +118,17 @@ public class BookController {
     public RedirectView saveBook(@RequestParam Long isbn,
                                  @RequestParam String title,@RequestParam Integer year,
                                  @RequestParam("genero") String genre,@RequestParam("author") Integer author,
-                                 @RequestParam("editorial") String editorial,
-                                 @RequestParam Integer copy,@RequestParam Integer loanedCopy,
-                                 @RequestParam String otherEditorial){
-        AuthorVO authorVO = authorService.findById(author);
+                                 @RequestParam("editorial") Integer editorial,
+                                 @RequestParam Integer copy,@RequestParam Integer loanedCopy){
+        try{
+            AuthorVO authorVO = authorService.findById(author);
+            EditorialVO editorialVO = editorialService.findById(editorial);
 
-        if(editorial.equals("otro")){
-            editorialService.createEditorial(otherEditorial);
+            bookService.create(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
+        }catch (Exception e){
+
         }
-        bookService.create(isbn,title,year,genre,authorVO,editorial,copy,loanedCopy,otherEditorial);
+
         return new RedirectView("/books/all");
     }
 
@@ -133,17 +136,15 @@ public class BookController {
     public RedirectView saveModificationsBook(@RequestParam Long isbn,
                                               @RequestParam String title, @RequestParam Integer year,
                                               @RequestParam("genero") String genre, @RequestParam("author") Integer author,
-                                              @RequestParam("editorial") String editorial,
-                                              @RequestParam Integer copy, @RequestParam Integer loanedCopy,
-                                              @RequestParam String otherEditorial){
+                                              @RequestParam("editorial") Integer editorial,
+                                              @RequestParam Integer copy, @RequestParam Integer loanedCopy){
 
 
         AuthorVO authorVO = authorService.findById(author);
 
-        if(editorial.equals("otro")){
-            editorialService.createEditorial(otherEditorial);
-        }
-        bookService.update(isbn,title,year,genre,authorVO,editorial,copy,loanedCopy,otherEditorial);
+        EditorialVO editorialVO = editorialService.findById(editorial);
+
+        bookService.update(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
         return new RedirectView("/books/all");
     }
 

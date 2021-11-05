@@ -26,8 +26,9 @@ public class EditorialService {
     }
 
     private final Boolean DISCHARGED = Boolean.TRUE;
+
     @Transactional
-    public void createEditorial(String name){
+    public EditorialVO createEditorial(String name){
         if(editorialVORepository.existsByName(name)){
             throw new FieldAlreadyExistException("The editorial with name '"+name+"' already exists");
         }
@@ -35,7 +36,7 @@ public class EditorialService {
         editorialVO= new EditorialVO();
         editorialVO.setName(Validations.formatNames(name));
         editorialVO.setDischarged(DISCHARGED);
-        editorialVORepository.create(editorialVO);
+        return editorialVORepository.create(editorialVO);
     }
 
     @Transactional

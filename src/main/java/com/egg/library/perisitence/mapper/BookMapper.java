@@ -37,8 +37,10 @@ public interface BookMapper {
 
     default Map<Integer,Integer> fromBook(List<Prestamo> prestamos) {
         Map<Integer, Integer> loans = new HashMap<>();
-        for (Prestamo prestamo : prestamos){
-            loans.put(prestamo.getId(),prestamo.getCliente().getId());
+        if(prestamos != null){
+            for (Prestamo prestamo : prestamos){
+                loans.put(prestamo.getId(),prestamo.getCliente().getId());
+            }
         }
         return loans;
     }

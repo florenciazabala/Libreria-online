@@ -40,12 +40,10 @@
           <label class="mb-3" for="#editorial">Editorial</label>
           <select name="editorial" class="oS" id="editorial" th:with="editorial=*{editorial}">
             <option th:each="editorial : ${editorials}"
-                    th:value="${editorial.name}"
+                    th:value="${editorial.id}"
                     th:text="${editorial.name}"
                     th:selected="${book.editorial != null} ? ${editorial.name} == *{editorial.name} : false">
-                    </option>
-            <option value="otro" class="oS">Otro</option><br>
-            <input type="text" th:name="otherEditorial" th:id="otherEditorial" class="otro ms-3"  maxlength="30">
+            </option>
           </select><br>
 
           <hr>
