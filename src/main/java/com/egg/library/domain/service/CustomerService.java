@@ -48,6 +48,9 @@ public class CustomerService {
         customerVO = customerVORepository.getById(id)
                 .orElseThrow(()-> new NoSuchElementException("The client with id '"+id+"' doesn't exists"));
 
+        if(customerVORepository.getByDocument(document).isPresent() && customerVORepository.getByDocument(document).get().getId() != id){
+            throw new FieldAlreadyExistException("The client with document'"+document+"' already exists");
+        }
         setDates(document,name,lastName,mail,telephone,customerVO.getUser());
         customerVORepository.updateCustomer(customerVO);
     }

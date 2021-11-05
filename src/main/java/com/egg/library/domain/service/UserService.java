@@ -24,6 +24,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
+    @Autowired
+    UserVO user;
+
     @Transactional
     public UserVO create(String username,String mail,String password){
 
@@ -34,14 +37,14 @@ public class UserService implements UserDetailsService {
            throw new FieldAlreadyExistException("The username already exists");
         }
 
-        UserVO user = new UserVO();
+        user = new UserVO();
         setDates(user,username,mail,password);
         return userRepository.create(user);
     }
 
     @Transactional
     public void update(String username,String mail,String password){
-        UserVO user= userRepository.findByMail(mail)
+        user= userRepository.findByMail(mail)
                 .orElseThrow(() -> new NoSuchElementException("The user '"+mail+"' doesn't exists"));
         setDates(user,username,mail,password);
         userRepository.update(user);

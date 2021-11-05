@@ -17,13 +17,18 @@ public class AuthorService {
     @Autowired
     private AuthorVORepository authorVORepository;
 
+    @Autowired
+    private AuthorVO authorVO;
+
     private final Boolean DISCHARGED = Boolean.TRUE;
+
     @Transactional
     public void createAuthor(String name){
         if(authorVORepository.existsByName(name)){
             throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
         }
-        AuthorVO authorVO = new AuthorVO();
+
+        authorVO = new AuthorVO();
         Validations.validString(name);
         authorVO.setName(Validations.formatNames(name));
         authorVO.setDischarged(DISCHARGED);
@@ -32,7 +37,7 @@ public class AuthorService {
 
     @Transactional
     public void updateAuthor(String name, Integer id){
-        AuthorVO authorVO = authorVORepository.getById(id)
+        authorVO = authorVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The author with id '"+id+"' doesn't exists"));
 
         if(authorVORepository.getByName(name) != null && authorVORepository.getByName(name).getIdAuthor() != id){

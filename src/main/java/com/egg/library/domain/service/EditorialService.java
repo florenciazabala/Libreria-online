@@ -17,6 +17,9 @@ public class EditorialService {
     @Autowired
     private EditorialVORepository editorialVORepository;
 
+    @Autowired
+    private EditorialVO editorialVO;
+
     @Transactional(readOnly = true)
     public List<EditorialVO> findAllEditorials(){
         return editorialVORepository.getAll();
@@ -29,7 +32,7 @@ public class EditorialService {
             throw new FieldAlreadyExistException("The editorial with name '"+name+"' already exists");
         }
         Validations.validString(name);
-        EditorialVO editorialVO= new EditorialVO();
+        editorialVO= new EditorialVO();
         editorialVO.setName(Validations.formatNames(name));
         editorialVO.setDischarged(DISCHARGED);
         editorialVORepository.create(editorialVO);
@@ -37,7 +40,7 @@ public class EditorialService {
 
     @Transactional
     public void updateEditorial(String name,Integer id){
-        EditorialVO editorialVO= editorialVORepository.getById(id)
+        editorialVO= editorialVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The editorial with id '"+id+"' doesn't exists"));
 
         if(editorialVORepository.getByName(name) != null && editorialVORepository.getByName(name).getId() != id){

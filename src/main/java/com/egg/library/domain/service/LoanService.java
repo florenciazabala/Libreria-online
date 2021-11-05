@@ -83,7 +83,7 @@ public class LoanService {
                     +"' already have a loan for the book '"+bookVO.getTitle()+"'");
         }
         if(loanVO.getBook().getIsbn() != bookVO.getIsbn() && bookVO.getAvaibleCopy()<1) {
-            throw new FieldInvalidException("no copies of the book '" + bookVO.getTitle() + "' are available for load");
+            throw new FieldInvalidException("No copies of the book '" + bookVO.getTitle() + "' are available for load");
         }
         setDates(loanDate,returnDate,bookVO,customerVO);
         loanVORepository.updateLoan(loanVO);
