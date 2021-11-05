@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
 public interface LibroDAO extends JpaRepository<Libro,Long> {
@@ -43,6 +44,9 @@ public interface LibroDAO extends JpaRepository<Libro,Long> {
 
     @Query("SELECT l FROM Libro l WHERE l.editorial.id= :editorialId")
     List<Libro> findByEditorial(@Param("editorialId") Integer editorialId);
+
+    @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo AND l.autor.id= :autorId")
+    Optional<Libro> findByTitleAndAuthor(@Param("titulo")String titulo, @Param("autorId") Integer autorId);
 
     @Query("SELECT l FROM Libro l WHERE l.alta=0")
     List<Libro> findDismissBooks();

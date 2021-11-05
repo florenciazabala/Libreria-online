@@ -35,6 +35,10 @@ public class AuthorService {
         AuthorVO authorVO = authorVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The author with id '"+id+"' doesn't exists"));
 
+        if(authorVORepository.getByName(name) != null && authorVORepository.getByName(name).getIdAuthor() != id){
+            throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
+        }
+
         Validations.validString(name);
         authorVO.setName(Validations.formatNames(name));
         authorVO.setDischarged(DISCHARGED);

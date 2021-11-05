@@ -39,6 +39,11 @@ public class EditorialService {
     public void updateEditorial(String name,Integer id){
         EditorialVO editorialVO= editorialVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The editorial with id '"+id+"' doesn't exists"));
+
+        if(editorialVORepository.getByName(name) != null && editorialVORepository.getByName(name).getId() != id){
+            throw new FieldAlreadyExistException("The editorial with name '"+name+"' already exists");
+        }
+
         Validations.validString(name);
         editorialVO.setName(Validations.formatNames(name));
         editorialVO.setDischarged(DISCHARGED);

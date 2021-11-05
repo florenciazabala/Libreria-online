@@ -1,6 +1,7 @@
 package com.egg.library.web.controller;
 
 
+import com.egg.library.domain.AuthorVO;
 import com.egg.library.domain.BookVO;
 import com.egg.library.domain.LoanVO;
 import com.egg.library.domain.service.AuthorService;
@@ -43,6 +44,7 @@ public class BookController {
 
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAllBooks());
+        mav.addObject("title","Listado de libros");
         mav.addObject("checked",false);
         return mav;
     }
@@ -51,6 +53,7 @@ public class BookController {
     public ModelAndView showByGenre(@RequestParam("genero") String genero){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findByGenre(genero));
+        mav.addObject("title","Listado de libros del género '"+genero+"' ");
         return mav;
     }
 
@@ -58,6 +61,7 @@ public class BookController {
     public ModelAndView showDismissbooks(){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findDismissBooks());
+        mav.addObject("title","Listado de libros dados de baja");
         return mav;
     }
 
@@ -66,6 +70,7 @@ public class BookController {
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAvaibleBooks());
         mav.addObject("checked",true);
+        mav.addObject("title","Listado de libros disponibles de alquilar");
         return mav;
     }
 
@@ -73,17 +78,12 @@ public class BookController {
     public ModelAndView showByAllFields(@RequestParam("search") String search){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAllFields(search));
+        mav.addObject("title","Listado de libros");
         return mav;
     }
 
     @GetMapping (value = "/{isbn}")
     public ModelAndView shearchById(@PathVariable Long isbn){
-        /*
-        ModelAndView mav = new ModelAndView("books");
-        List<BookVO> books = new ArrayList<>();
-        books.add(bookService.findByIsbn(isbn));
-        mav.addObject("books",books);
-        return mav;*/
         ModelAndView mav = new ModelAndView("bookDetail");
         mav.addObject("book",bookService.findByIsbn(isbn));
         List<Integer> loansId = bookService.findByIsbn(isbn).getLoans().keySet().stream().collect(Collectors.toList());
@@ -116,34 +116,34 @@ public class BookController {
     @PostMapping(value = "/save")
     public RedirectView saveBook(@RequestParam Long isbn,
                                  @RequestParam String title,@RequestParam Integer year,
-                                 @RequestParam("genero") String genre,@RequestParam("autor") String author,
+                                 @RequestParam("genero") String genre,@RequestParam("author") Integer author,
                                  @RequestParam("editorial") String editorial,
                                  @RequestParam Integer copy,@RequestParam Integer loanedCopy,
-                                 @RequestParam String otherAuthor, @RequestParam String otherEditorial){
-        if(author.equals("otro")){
-            authorService.createAuthor(otherAuthor);
-        }
+                                 @RequestParam String otherEditorial){
+        AuthorVO authorVO = authorService.findById(author);
+
         if(editorial.equals("otro")){
             editorialService.createEditorial(otherEditorial);
         }
-        bookService.create(isbn,title,year,genre,author,editorial,copy,loanedCopy,otherAuthor,otherEditorial);
+        bookService.create(isbn,title,year,genre,authorVO,editorial,copy,loanedCopy,otherEditorial);
         return new RedirectView("/books/all");
     }
 
     @PostMapping(value = "/saveModifications")
     public RedirectView saveModificationsBook(@RequestParam Long isbn,
                                               @RequestParam String title, @RequestParam Integer year,
-                                              @RequestParam("genero") String genre, @RequestParam("autor") String author,
+                                              @RequestParam("genero") String genre, @RequestParam("author") Integer author,
                                               @RequestParam("editorial") String editorial,
                                               @RequestParam Integer copy, @RequestParam Integer loanedCopy,
-                                              @RequestParam String otherAuthor, @RequestParam String otherEditorial){
-        if(author.equals("otro")){
-            authorService.createAuthor(otherAuthor);
-        }
+                                              @RequestParam String otherEditorial){
+
+
+        AuthorVO authorVO = authorService.findById(author);
+
         if(editorial.equals("otro")){
             editorialService.createEditorial(otherEditorial);
         }
-        bookService.update(isbn,title,year,genre,author,editorial,copy,loanedCopy,otherAuthor,otherEditorial);
+        bookService.update(isbn,title,year,genre,authorVO,editorial,copy,loanedCopy,otherEditorial);
         return new RedirectView("/books/all");
     }
 

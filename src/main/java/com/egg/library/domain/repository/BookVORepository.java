@@ -19,6 +19,7 @@ public interface BookVORepository {
     List<BookVO> getByGenre(Genre genre);
     List<BookVO> getByAuthor(Integer authorId);
     List<BookVO> getByEditorial(Integer editorialId);
+    Optional<BookVO> getByTitleAndAuthor(String title,Integer authorId);
     List<BookVO> getDismissBooks();
     List<BookVO> getAvaibleBooks();
     BigDecimal getPercentGenre(int genre);

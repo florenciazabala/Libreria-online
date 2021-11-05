@@ -6,6 +6,7 @@
 <body id="bookListPage">
 <nav th:replace="../static/layouts/layout :: navbar"></nav>
 <div class="container-fluid mt-5 mb-5">
+    <h2>[[${title}]]</h2>
     <div class="row" style="min-height: 30rem;">
         <div class="col-9 mt-5">
             <div class="alert alert-secondary" role="alert" th:if="${books.isEmpty()}">
@@ -24,10 +25,11 @@
                     </div>
                 </div>
                 <div class="col-md-3 justify-content-end align-self-center">
+                    <span th:if="${book.avaibleCopy} <= 0" class="badge rounded-pill bg-danger mb-1" style="color: white;">Agotado</span>
                     <table class="table table-borderless" id="tableBooks">
                         <tr>
                             <th class="p-0">Editorial: </th>
-                            <td class="p-0" th:text="${book.editorial.name}"></td>
+                            <td class="p-0"  th:text="${book.editorial.name}"></td>
                         </tr>
                         <tr>
                             <th class="p-0">Género: </th>
@@ -68,7 +70,7 @@
                    <a type="button submit" class="btn buttonSearch" id="liveAlertBtn" onclick="searcher()">Search</a>
                </div>
            </div>
-           <div class="row ml-4 mb-1">
+           <div class="row ml-4 mb-1" th:if="${books != null}">
                <a th:href="${books[0].discharged == false} ? @{/books/all} :@{/books/dismiss}" class="buttonBook" style="text-decoration: none">
                    <i th:classappend="${books[0].discharged == false} ? 'fas fa-check-square fa-lg' : 'far fa-square fa-lg'" class="mr-2"></i>
                    Ver libros dados de baja</a>

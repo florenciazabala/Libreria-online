@@ -20,8 +20,8 @@ import java.util.List;
 @Table(name="libros")
 @EntityListeners(AuditingEntityListener.class)
 public final class Libro {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long isbn;
     @Column(nullable = false)
     private String titulo;

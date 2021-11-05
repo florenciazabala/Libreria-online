@@ -71,33 +71,38 @@ public class BookService {
     }
 
     @Transactional
-    public void create(Long isbn,String title,Integer year,String genre, String author, String editorial,Integer copy, Integer loanedCopy, String newAuthor,String newEditorial){
+    public void create(Long isbn,String title,Integer year,String genre, AuthorVO author, String editorial,Integer copy, Integer loanedCopy,String newEditorial){
         if(bookVORepository.getByIsbn(isbn).isPresent()){
             throw new FieldAlreadyExistException("The book with isbn '"+isbn+"' already exists");
         }
+
+        if(bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).isPresent()){
+            throw new FieldAlreadyExistException("The book with title '"+title+"' already exists");
+        }
         BookVO bookVO = new BookVO();
-        setDates(bookVO,isbn,title,year,genre,author,editorial,copy,loanedCopy,newAuthor,newEditorial);
+        setDates(bookVO,isbn,title,year,genre,author,editorial,copy,loanedCopy,newEditorial);
 
         bookVORepository.createBook(bookVO);
         updatePercentGenre();
     }
 
     @Transactional
-    public void update(Long isbn,String title,Integer year,String genre, String author, String editorial,Integer copy, Integer loanedCopy, String newAuthor,String newEditorial){
+    public void update(Long isbn,String title,Integer year,String genre, AuthorVO author, String editorial,Integer copy, Integer loanedCopy,String newEditorial){
         BookVO bookVO = bookVORepository.getByIsbn(isbn)
                 .orElseThrow(() -> new NoSuchElementException("The book with isbn '"+isbn+"' doesn't exists"));
 
-        setDates(bookVO,isbn,title,year,genre,author,editorial,copy,loanedCopy,newAuthor,newEditorial);
+        if( bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).isPresent() && bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).get().getIsbn() != isbn){
+            throw new FieldAlreadyExistException("The book with title '"+title+"' already exists");
+        }
+
+        setDates(bookVO,isbn,title,year,genre,author,editorial,copy,loanedCopy,newEditorial);
         bookVORepository.updateBook(bookVO);
         updatePercentGenre();
     }
 
     private final Boolean DISCHARGED = Boolean.TRUE;
-    public void setDates(BookVO bookVO,Long isbn, String title,Integer year,String genre, String author, String editorial,Integer copy, Integer loanedCopy, String newAuthor,String newEditorial){
-        if(author.equals("otro")){
-            author = newAuthor;
-        }
-        AuthorVO authorVO = authorService.findByName(author);
+    public void setDates(BookVO bookVO,Long isbn, String title,Integer year,String genre, AuthorVO author, String editorial,Integer copy, Integer loanedCopy,String newEditorial){
+
         if(editorial.equals("otro")){
             editorial = newEditorial;
         }
@@ -114,7 +119,7 @@ public class BookService {
         bookVO.setTitle(title);
         bookVO.setYear(year);
         bookVO.setGenre(genreEnum);
-        bookVO.setAuthor(authorVO);
+        bookVO.setAuthor(author);
         bookVO.setEditorial(editorialVO);
         bookVO.setCopy(copy);
         bookVO.setLoanedCopy(loanedCopy);

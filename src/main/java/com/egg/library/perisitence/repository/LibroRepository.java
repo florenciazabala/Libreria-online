@@ -66,6 +66,11 @@ public class LibroRepository implements BookVORepository {
     }
 
     @Override
+    public Optional<BookVO> getByTitleAndAuthor(String title,Integer authorId) {
+        return libroDAO.findByTitleAndAuthor(title,authorId).map(book -> bookMapper.toBookVO(book));
+    }
+
+    @Override
     public List<BookVO> getDismissBooks() {
         return bookMapper.toBookVO(libroDAO.findDismissBooks());
     }
