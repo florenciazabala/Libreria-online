@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 
@@ -27,12 +26,12 @@ class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    List<AuthorVO> authors;
+    List<AuthorVO> authorsList;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        authors = getAuthorsLists();
+        authorsList = getAuthorsLists();
     }
 
     public List<AuthorVO> getAuthorsLists(){
@@ -45,7 +44,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    void createAuthor() {
+    void createAuthorAndexistsByNameuIsTrue() {
         String name = "Cortazar";
         when(authorVORepository.existsByName(any(String.class))).thenReturn(true);
         FieldAlreadyExistException myException = null;
@@ -59,13 +58,29 @@ class AuthorServiceTest {
     }
 
     @Test
+    void createAuthorAndexistsByNameuIsFalse() {
+        String name = "Cortazar";
+        when(authorVORepository.existsByName(any(String.class))).thenReturn(false);
+        FieldAlreadyExistException myException = null;
+        try {
+            authorService.createAuthor(name);
+        } catch (FieldAlreadyExistException e) {
+            myException = e;
+        }
+        assertNull(myException);
+    }
+
+    @Test
     void updateAuthor() {
     }
 
     @Test
     void findAllAuthors() {
         when(authorVORepository.getAll()).thenReturn(getAuthorsLists());
-        authorService.findAllAuthors();
+        List<AuthorVO> authorsList = authorService.findAllAuthors();
+        assertNotNull(authorsList);
+        assertTrue(authorsList.size()>0);
+
     }
 
     @Test
@@ -88,9 +103,9 @@ class AuthorServiceTest {
 
     @Test
     void findById_when_author_is_find() {
-        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(2)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(2)));
         Exception myException = null;
-        assertEquals(authors.get(2), authorService.findById(2));
+        assertEquals(authorsList.get(2), authorService.findById(2));
     }
 
     //Delete
@@ -125,7 +140,7 @@ class AuthorServiceTest {
     @Test
     void delete_set_discharged_false_when_its_true() {
         Integer id =1;
-        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(0)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(0)));
         AuthorVO authorVO = authorVORepository.getById(id).get();
         authorService.delete(id);
         assertFalse(authorVO.getDischarged());
@@ -134,7 +149,7 @@ class AuthorServiceTest {
     @Test
     void delete_keep_discharged_false_when_its_false() {
         Integer id =1;
-        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(1)));
         AuthorVO authorVO = authorVORepository.getById(id).get();
         authorService.delete(id);
         assertFalse(authorVO.getDischarged());
@@ -159,7 +174,7 @@ class AuthorServiceTest {
     @Test
     void discharge_set_discharged_true_when_its_false() {
         Integer id =1;
-        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(1)));
         AuthorVO authorVO = authorVORepository.getById(id).get();
         authorService.discharge(id);
         assertTrue(authorVO.getDischarged());
@@ -168,7 +183,7 @@ class AuthorServiceTest {
     @Test
     void discharge_keep_discharged_true_when_its_true() {
         Integer id =1;
-        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authors.get(1)));
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(1)));
         AuthorVO authorVO = authorVORepository.getById(id).get();
         authorService.discharge(id);
         assertTrue(authorVO.getDischarged());
