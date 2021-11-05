@@ -21,8 +21,8 @@ public class AutorRepository implements AuthorVORepository {
     private AuthorMapper authorMapper;
 
     @Override
-    public void create(AuthorVO authorVO) {
-        autorDAO.save(authorMapper.toAutor(authorVO));
+    public AuthorVO create(AuthorVO authorVO) {
+        return authorMapper.toAuthorVO(autorDAO.save(authorMapper.toAutor(authorVO)));
     }
 
     @Override

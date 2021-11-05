@@ -21,8 +21,8 @@ public class ClienteRepository implements CustomerVORepository {
     private CustomerMapper customerMapper;
 
     @Override
-    public void createCustomer(CustomerVO customerVO) {
-        clienteDAO.save(customerMapper.toCliente(customerVO));
+    public CustomerVO createCustomer(CustomerVO customerVO) {
+        return customerMapper.toCustomerVO(clienteDAO.save(customerMapper.toCliente(customerVO)));
     }
 
     @Override

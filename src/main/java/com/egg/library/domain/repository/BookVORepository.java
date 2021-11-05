@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 public interface BookVORepository {
-    void createBook(BookVO bookVO);
+    BookVO createBook(BookVO bookVO);
     void updateBook(BookVO bookVO);
     Optional<BookVO> getByIsbn(Long isbn);
     List<BookVO> getAll();

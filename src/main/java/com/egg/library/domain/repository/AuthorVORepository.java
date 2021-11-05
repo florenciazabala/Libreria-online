@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface AuthorVORepository {
 
-    void create(AuthorVO authorVO);
+    AuthorVO create(AuthorVO authorVO);
     List<AuthorVO> getAll();
     Optional<AuthorVO> getById(Integer id);
     void update(AuthorVO authorVO);

@@ -23,8 +23,8 @@ public class PrestamoRepository implements LoanVORepository {
 
 
     @Override
-    public void createLoan(LoanVO loanVO) {
-        prestamoDAO.save(loanMapper.toPrestamo(loanVO));
+    public LoanVO createLoan(LoanVO loanVO) {
+        return loanMapper.toLoanVO(prestamoDAO.save(loanMapper.toPrestamo(loanVO)));
     }
 
     @Override

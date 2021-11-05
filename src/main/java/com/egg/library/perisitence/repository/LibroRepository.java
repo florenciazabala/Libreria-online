@@ -23,11 +23,9 @@ public class LibroRepository implements BookVORepository {
     private BookMapper bookMapper;
 
     @Override
-    public void createBook(BookVO bookVO) {
+    public BookVO createBook(BookVO bookVO) {
         Libro libro = bookMapper.toLibro(bookVO);
-        System.out.println("Book: "+bookVO.getTitle());
-        System.out.println("Libro: "+libro.getTitulo());
-        libroDAO.save(libro);
+        return bookMapper.toBookVO(libroDAO.save(libro));
     }
 
     @Override

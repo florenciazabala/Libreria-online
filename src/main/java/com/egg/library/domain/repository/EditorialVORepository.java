@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface EditorialVORepository {
 
-    void create(EditorialVO editorialVO);
+    EditorialVO create(EditorialVO editorialVO);
     List<EditorialVO> getAll();
     Optional<EditorialVO> getById(Integer id);
     void update(EditorialVO editorialVO);

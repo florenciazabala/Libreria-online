@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LoanVORepository {
-    void createLoan(LoanVO loanVO);
+    LoanVO createLoan(LoanVO loanVO);
     void updateLoan(LoanVO loanVO);
     Optional<LoanVO> getById(Integer id);
     Optional<LoanVO> getByBookAndCustomer(Long isbnBook, Integer idCustomer);
