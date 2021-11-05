@@ -17,8 +17,11 @@ public class AuthorService {
     @Autowired
     private AuthorVORepository authorVORepository;
 
+<<<<<<< HEAD
     @Autowired
     private AuthorVO authorVO;
+=======
+>>>>>>> featureTests
 
     private final Boolean DISCHARGED = Boolean.TRUE;
 

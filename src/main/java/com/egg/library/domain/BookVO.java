@@ -1,6 +1,7 @@
 package com.egg.library.domain;
 
 import com.egg.library.util.Genre;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Component
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class BookVO {
 
 
