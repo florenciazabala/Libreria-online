@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +45,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    void createAuthorAndexistsByNameuIsTrue() {
+    void createAuthorWhenExistsByNameIsTrue() {
         String name = "Cortazar";
         when(authorVORepository.existsByName(any(String.class))).thenReturn(true);
         FieldAlreadyExistException myException = null;
@@ -58,7 +59,7 @@ class AuthorServiceTest {
     }
 
     @Test
-    void createAuthorAndexistsByNameuIsFalse() {
+    void createAuthorWhenExistsByNameIsFalse() {
         String name = "Cortazar";
         when(authorVORepository.existsByName(any(String.class))).thenReturn(false);
         FieldAlreadyExistException myException = null;
@@ -71,7 +72,41 @@ class AuthorServiceTest {
     }
 
     @Test
-    void updateAuthor() {
+    void createAuthorWhenExistsByNameIsFalseAndReurnObject() {
+        String name = "Cortazar";
+        when(authorVORepository.existsByName(any(String.class))).thenReturn(false);
+        when(authorVORepository.create(any(AuthorVO.class))).thenReturn(authorsList.get(0));
+        assertEquals(authorsList.get(0),authorService.createAuthor(name));
+    }
+
+    @Test
+    void updateAuthorWhenIdDoesntExists() {
+        String name = "Borges";
+        Integer id = 2;
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.empty());
+        Exception exception = assertThrows(NoSuchElementException.class,()->{
+            authorService.updateAuthor(name,id);
+        });
+
+        String expectedMessage = "The author with id '"+id+"' doesn't exists";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void updateAuthorWhenTheNameUpdateAlreaadyExists() {
+        String name = "Borges";
+        when(authorVORepository.getById(any(Integer.class))).thenReturn(Optional.of(authorsList.get(1)));
+        when(authorVORepository.getByName(any(String.class))).thenReturn(authorsList.get(2));
+        Exception exception = assertThrows(FieldAlreadyExistException.class,()->{
+            authorService.updateAuthor(name,2);
+        });
+
+        String expectedMessage = "The author with name '"+name+"' already exists";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test

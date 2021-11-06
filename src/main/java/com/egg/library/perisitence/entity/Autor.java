@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @Table(name="autores")
 public final class Autor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

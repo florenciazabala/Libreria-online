@@ -24,7 +24,7 @@ public class AuthorService {
     private final Boolean DISCHARGED = Boolean.TRUE;
 
     @Transactional
-    public void createAuthor(String name){
+    public AuthorVO createAuthor(String name){
         if(authorVORepository.existsByName(name)){
             throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
         }
@@ -33,13 +33,13 @@ public class AuthorService {
         Validations.validString(name);
         authorVO.setName(Validations.formatNames(name));
         authorVO.setDischarged(DISCHARGED);
-        authorVORepository.create(authorVO);
+        return authorVORepository.create(authorVO);
     }
 
     @Transactional
     public void updateAuthor(String name, Integer id){
         authorVO = authorVORepository.getById(id)
-                .orElseThrow(()-> new FieldAlreadyExistException("The author with id '"+id+"' doesn't exists"));
+                .orElseThrow(()-> new NoSuchElementException("The author with id '"+id+"' doesn't exists"));
 
         if(authorVORepository.getByName(name) != null && authorVORepository.getByName(name).getIdAuthor() != id){
             throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
