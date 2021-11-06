@@ -5,6 +5,9 @@ import com.egg.library.domain.repository.AuthorVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.util.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,8 +55,8 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public List<AuthorVO> findAllAuthors(){
-        return authorVORepository.getAll();
+    public Page<AuthorVO> findAll(Pageable pageable){
+        return authorVORepository.getAll(pageable);
     }
 
     @Transactional(readOnly = true)

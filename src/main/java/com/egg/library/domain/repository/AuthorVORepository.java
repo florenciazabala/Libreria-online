@@ -1,6 +1,9 @@
 package com.egg.library.domain.repository;
 
 import com.egg.library.domain.AuthorVO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 
@@ -11,7 +14,7 @@ import java.util.Optional;
 public interface AuthorVORepository {
 
     AuthorVO create(AuthorVO authorVO);
-    List<AuthorVO> getAll();
+    Page<AuthorVO> getAll(Pageable pageable);
     Optional<AuthorVO> getById(Integer id);
     void update(AuthorVO authorVO);
     AuthorVO getByName(String name);

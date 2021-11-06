@@ -1,4 +1,4 @@
-package com.egg.library.util;
+package com.egg.library.util.pagination;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

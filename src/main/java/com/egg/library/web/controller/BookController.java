@@ -92,7 +92,7 @@ public class BookController {
         mav.addObject("loans",loanVOS);
         return mav;
     }
-
+    /*
     @GetMapping(value = "/create")
     public ModelAndView createBook(){
         ModelAndView mav = new ModelAndView("formBook");
@@ -146,7 +146,7 @@ public class BookController {
 
         bookService.update(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
         return new RedirectView("/books/all");
-    }
+    }*/
 
     @GetMapping (value = "/delete/{isbn}")
     public RedirectView deleteBook(@PathVariable Long isbn){

@@ -6,6 +6,10 @@ import com.egg.library.perisitence.DAO.AutorDAO;
 import com.egg.library.perisitence.entity.Autor;
 import com.egg.library.perisitence.mapper.AuthorMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,8 +30,10 @@ public class AutorRepository implements AuthorVORepository {
     }
 
     @Override
-    public List<AuthorVO> getAll() {
-        return authorMapper.toAuthorVO(autorDAO.findAll());
+    public Page<AuthorVO> getAll(Pageable pageable) {
+        Page<Autor> autores = autorDAO.findAll(pageable);
+        List<AuthorVO> authors = authorMapper.toAuthorVO(autores.getContent());
+        return new PageImpl<>(authors, pageable, autores.getTotalElements());
     }
 
     @Override

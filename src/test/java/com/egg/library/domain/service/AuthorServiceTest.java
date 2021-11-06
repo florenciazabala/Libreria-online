@@ -61,12 +61,12 @@ class AuthorServiceTest {
     @Test
     void updateAuthor() {
     }
-
+/*
     @Test
     void findAllAuthors() {
         when(authorVORepository.getAll()).thenReturn(getAuthorsLists());
         authorService.findAllAuthors();
-    }
+    }*/
 
     @Test
     void findByName() {
