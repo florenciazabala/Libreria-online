@@ -92,12 +92,12 @@ public class BookController {
         mav.addObject("loans",loanVOS);
         return mav;
     }
-    /*
+
     @GetMapping(value = "/create")
     public ModelAndView createBook(){
         ModelAndView mav = new ModelAndView("formBook");
         mav.addObject("book",new BookVO());
-        mav.addObject("authors",  authorService.findAllAuthors());
+        mav.addObject("authors",  authorService.findAll());
         mav.addObject("editorials",editorialService.findAllEditorials());
         mav.addObject("action", "save");
         return mav;
@@ -108,7 +108,7 @@ public class BookController {
         ModelAndView mav = new ModelAndView("formBook");
 
         mav.addObject("book",bookService.findByIsbn(isbn));
-        mav.addObject("authors", authorService.findAllAuthors());
+        mav.addObject("authors", authorService.findAll());
         mav.addObject("editorials",editorialService.findAllEditorials());
         mav.addObject("action", "saveModifications");
         return mav;
@@ -146,7 +146,7 @@ public class BookController {
 
         bookService.update(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
         return new RedirectView("/books/all");
-    }*/
+    }
 
     @GetMapping (value = "/delete/{isbn}")
     public RedirectView deleteBook(@PathVariable Long isbn){

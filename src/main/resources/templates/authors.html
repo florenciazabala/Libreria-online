@@ -42,7 +42,7 @@
                 </div>
                 </div>
                     <!-- Pagination -->
-                    <nav aria-label="Page navigation" class="paging justify-self-center">
+                    <nav aria-label="Page navigation" class="paging justify-self-center" th:if="${page} != null">
                         <ul class="pagination" th:if="${page.totalPages > 1}">
 
                             <li class="page-item" th:classappend="${page.currentPage == 1? 'disabled' : ''}">

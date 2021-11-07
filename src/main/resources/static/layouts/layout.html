@@ -84,17 +84,17 @@
 
 <footer th:fragment="footer">
   <!-- Footer -->
-  <footer  class="page-footer font-small  pt-5">
+  <footer  class="page-footer font-small  pt-5 ">
 
     <!-- Footer Links -->
-    <div class="container-fluid text-center text-md-left ps-3 pe-3">
+    <div class="container-fluid text-center text-md-left ps-3 ">
 
       <!-- Grid row -->
       <div class="row">
 
         <!-- Grid column -->
-        <div class="col-md-5 mt-md-0 mt-3">
-          <a class="" href="#"><img th:src="@{/images/logo.svg}" width="50rem" alt="brand"  class="d-inline-block align-text-top">
+        <div class="col-md-3  mt-3 ml-3">
+          <a class="" href="#"><img th:src="@{/images/logo.svg}" width="50rem" alt="brand"  class="rounded float-start">
           </a>
 
         </div>
@@ -103,7 +103,7 @@
         <hr class="clearfix w-100 d-md-none pb-3">
 
         <!-- Grid column -->
-        <div class="col-md-3 mb-md-0 mb-3">
+        <div class="col-md-5 mb-md-0 mb-3">
 
           <!-- Links -->
 
@@ -122,13 +122,13 @@
             </li>
           </ul>
 
-        </div>
+          </div>
 
         <div class="col-md-4 mb-md-0">
               <div class="row justify-content-center">
-                <a href="#" class="m-3"><img th:src="@{/images/instagram.svg}" width="40rem"></a>
-                <a href="#" class="m-3"><img th:src="@{/images/facebook.svg}" width="40rem"></a>
-                <a href="#" class="m-3"><img th:src="@{/images/whatsapp.svg}" width="40rem"></a>
+                <div class="col p-0"><a href="#" class=""><img th:src="@{/images/instagram.svg}" width="40rem"></a></div>
+                <div class="col p-0"><a href="#" class=""><img th:src="@{/images/facebook.svg}" width="40rem"></a></div>
+                <div class="col p-0"><a href="#"><img th:src="@{/images/whatsapp.svg}" width="40rem"></a></div>
               </div>
               <form class="row g-2 mt-3 justify-content-center">
                 <div class="col-auto">

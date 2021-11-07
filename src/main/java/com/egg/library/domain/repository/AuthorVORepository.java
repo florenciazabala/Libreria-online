@@ -15,6 +15,7 @@ public interface AuthorVORepository {
 
     AuthorVO create(AuthorVO authorVO);
     Page<AuthorVO> getAll(Pageable pageable);
+    List<AuthorVO> getAll();
     Optional<AuthorVO> getById(Integer id);
     void update(AuthorVO authorVO);
     AuthorVO getByName(String name);

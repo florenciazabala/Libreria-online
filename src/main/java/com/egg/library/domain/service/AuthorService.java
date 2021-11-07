@@ -60,6 +60,11 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
+    public List<AuthorVO> findAll(){
+        return authorVORepository.getAll();
+    }
+
+    @Transactional(readOnly = true)
     public AuthorVO findByName(String name){
         return authorVORepository.getByName(name);
     }

@@ -37,6 +37,11 @@ public class AutorRepository implements AuthorVORepository {
     }
 
     @Override
+    public List<AuthorVO> getAll() {
+        return authorMapper.toAuthorVO(autorDAO.findAll());
+    }
+
+    @Override
     public Optional<AuthorVO> getById(Integer id) {
         return autorDAO.findById(id).map(autor -> authorMapper.toAuthorVO(autor));
     }
