@@ -2,12 +2,16 @@ package com.egg.library.perisitence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
 @Entity
@@ -29,4 +33,10 @@ public final class Autor {
     @OneToOne(cascade = CascadeType.PERSIST)
     private Foto foto;
 
+    @CreatedDate
+    @Column( updatable = false)
+    private LocalDateTime creacion;
+
+    @LastModifiedDate
+    private LocalDateTime modificacion;
 }

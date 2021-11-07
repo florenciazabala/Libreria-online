@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring",uses={LoanMapper.class})
+@Mapper(componentModel = "spring",uses={UserMapper.class,LoanMapper.class})
 public interface CustomerMapper {
     @Mappings({
             @Mapping(source = "documento",target = "document"),
@@ -21,7 +21,8 @@ public interface CustomerMapper {
             @Mapping(source = "apellido",target = "lastName"),
             @Mapping(source = "telefono",target = "telephone"),
             @Mapping(source = "alta",target = "discharged"),
-            @Mapping(source = "prestamos",target = "loans")
+            @Mapping(source = "prestamos",target = "loans"),
+            @Mapping(source = "usuario",target = "user")
     })
     CustomerVO toCustomerVO(Cliente cliente);
     List<CustomerVO> toCustomerVO(List<Cliente> cliente);

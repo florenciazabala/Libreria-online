@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <div id="backgroudForm" class="col col-md-6 p-0">
+            <img id="imageCustomer" th:src="@{/images/customer.jpg}" class="img-fluid" alt="...">
+            <!--th:if="${author.picture == null}}"-->
+        </div>
+        <div class="col col-md-6 justify-content-center align-self-center">
+            <h5 class="text-center" th:text="${title}"></h5>
+            <form method="POST"  class="text-center mt-2"
+                  novalidate th:action="@{/logincheck}">
+
+                <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
+                    <label class="mb-3">Mail o username <input type="text"  name="username"> </label><br>
+                    <label class="mb-3">Password <input type="password" name="password"> </label><br>
+                    <button type="submit" class="btn btn-primary mt-3 mb-3">Ingresar</button>
+                </fieldset>
+                <a th:href="@{/signup}">¿Aún no tiene cuenta? Registrarse</a>
+            </form>
+
+            <div th:if="${error != null} OR ${logout != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-success'" class="alert alert-dismissible fade show" role="alert">
+                <i th:classappend="${error != null} ? 'fa-times-circle' : 'fa-check-circle'" class="fas "></i>
+                <strong>Resultado de la solicitud</strong> [[${error != null} ? ${error} : ${logout}]]
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+<script>
+
+</script>
+</body>
+</html>

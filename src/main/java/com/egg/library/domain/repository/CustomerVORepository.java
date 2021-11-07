@@ -7,7 +7,7 @@ import java.util.Optional;
 
 
 public interface CustomerVORepository {
-    void createCustomer(CustomerVO customerVO);
+    CustomerVO createCustomer(CustomerVO customerVO);
     void updateCustomer(CustomerVO customerVO);
     Optional<CustomerVO> getById(Integer id);
     Optional<CustomerVO> getByDocument(Long document);

@@ -9,6 +9,10 @@ import com.egg.library.perisitence.entity.Foto;
 import com.egg.library.perisitence.mapper.AuthorMapper;
 import com.egg.library.perisitence.mapper.PictureMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,8 +31,15 @@ public class AutorRepository implements AuthorVORepository {
     private PictureMapper pictureMapper;
 
     @Override
-    public void create(AuthorVO authorVO) {
-        autorDAO.save(authorMapper.toAutor(authorVO));
+    public AuthorVO create(AuthorVO authorVO) {
+        return authorMapper.toAuthorVO(autorDAO.save(authorMapper.toAutor(authorVO)));
+    }
+
+    @Override
+    public Page<AuthorVO> getAll(Pageable pageable) {
+        Page<Autor> autores = autorDAO.findAll(pageable);
+        List<AuthorVO> authors = authorMapper.toAuthorVO(autores.getContent());
+        return new PageImpl<>(authors, pageable, autores.getTotalElements());
     }
 
 

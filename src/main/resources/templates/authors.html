@@ -43,7 +43,27 @@
                         </ul>
                     </div>
                 </div>
-                </div>
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="paging justify-self-center" th:if="${page} != null">
+                        <ul class="pagination" th:if="${page.totalPages > 1}">
+
+                            <li class="page-item" th:classappend="${page.currentPage == 1? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/authors/all?page='+${page.currentPage -1}}"
+                                   tabindex="-1">Previous</a>
+                            </li>
+                            <th:block th:each="item : ${#numbers.sequence(1, page.totalPages)}">
+                                <li class="page-item" th:classappend="${item == page.currentPage? 'active' : ''}">
+                                    <a class="page-link" th:href="@{'/authors/all?page=' + ${item}}"
+                                       th:text="${item}"></a>
+                                </li>
+                            </th:block>
+
+                            <li class="page-item" th:classappend="${page.currentPage  == page.totalPages  ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{'/authors/all?page='+${page.currentPage +1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+
             </div>
     </div>
 </div>

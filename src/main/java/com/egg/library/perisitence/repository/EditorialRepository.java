@@ -21,8 +21,8 @@ public class EditorialRepository implements EditorialVORepository{
     private EditorialMapper editorialMapper;
 
     @Override
-    public void create(EditorialVO editorialVO) {
-        editorialDAO.save(editorialMapper.toEditorial(editorialVO));
+    public EditorialVO create(EditorialVO editorialVO) {
+        return editorialMapper.toEditorialVO(editorialDAO.save(editorialMapper.toEditorial(editorialVO)));
     }
 
     @Override

@@ -21,15 +21,15 @@ public class ClienteRepository implements CustomerVORepository {
     private CustomerMapper customerMapper;
 
     @Override
-    public void createCustomer(CustomerVO customerVO) {
-        clienteDAO.save(customerMapper.toCliente(customerVO));
+    public CustomerVO createCustomer(CustomerVO customerVO) {
+        return customerMapper.toCustomerVO(clienteDAO.save(customerMapper.toCliente(customerVO)));
     }
 
     @Override
     public void updateCustomer(CustomerVO customerVO) {
         Cliente cliente = customerMapper.toCliente(customerVO);
         clienteDAO.update(cliente.getDocumento(),cliente.getNombre(),cliente.getApellido(),cliente.getMail(),cliente.getTelefono(),
-                cliente.getAlta(),cliente.getId());
+                cliente.getAlta(),cliente.getUsuario(),cliente.getId());
     }
 
     @Override

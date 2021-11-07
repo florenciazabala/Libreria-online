@@ -2,10 +2,13 @@ package com.egg.library.perisitence.DAO;
 
 import com.egg.library.perisitence.entity.Autor;
 import com.egg.library.perisitence.entity.Foto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 
 import java.util.List;
 
@@ -19,6 +22,9 @@ public interface AutorDAO extends JpaRepository<Autor,Integer> {
     @Modifying
     @Query("UPDATE Autor a SET a.foto = :foto WHERE a.id= :id")
     public void updateFoto(@Param("foto") Foto foto, @Param("id") Integer id);
+
+    @Query("SELECT a FROM Autor a WHERE a.alta=1")
+    Page<Autor> findAll(Pageable pageable);
 
     @Query("SELECT a FROM Autor a WHERE a.alta=1")
     List<Autor> findAll();

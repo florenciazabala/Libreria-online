@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 public interface BookVORepository {
-    void createBook(BookVO bookVO);
+    BookVO createBook(BookVO bookVO);
     void updateBook(BookVO bookVO);
     Optional<BookVO> getByIsbn(Long isbn);
     List<BookVO> getAll();
@@ -18,7 +18,10 @@ public interface BookVORepository {
     List<BookVO> getByAllFields(String search);
     List<BookVO> getByGenre(Genre genre);
     List<BookVO> getByAuthor(Integer authorId);
-    List<BookVO> getByTEditorial(Integer editorialId);
+    List<BookVO> getByEditorial(Integer editorialId);
+    Optional<BookVO> getByTitleAndAuthor(String title,Integer authorId);
+    List<BookVO> getDismissBooks();
+    List<BookVO> getAvaibleBooks();
     BigDecimal getPercentGenre(int genre);
     boolean existsByIsbn(Long isbn);
 }

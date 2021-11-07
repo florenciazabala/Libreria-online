@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class EditorialService {
@@ -16,28 +17,37 @@ public class EditorialService {
     @Autowired
     private EditorialVORepository editorialVORepository;
 
+    @Autowired
+    private EditorialVO editorialVO;
+
     @Transactional(readOnly = true)
     public List<EditorialVO> findAllEditorials(){
         return editorialVORepository.getAll();
     }
 
     private final Boolean DISCHARGED = Boolean.TRUE;
+
     @Transactional
-    public void createEditorial(String name){
+    public EditorialVO createEditorial(String name){
         if(editorialVORepository.existsByName(name)){
             throw new FieldAlreadyExistException("The editorial with name '"+name+"' already exists");
         }
         Validations.validString(name);
-        EditorialVO editorialVO= new EditorialVO();
+        editorialVO= new EditorialVO();
         editorialVO.setName(Validations.formatNames(name));
         editorialVO.setDischarged(DISCHARGED);
-        editorialVORepository.create(editorialVO);
+        return editorialVORepository.create(editorialVO);
     }
 
     @Transactional
     public void updateEditorial(String name,Integer id){
-        EditorialVO editorialVO= editorialVORepository.getById(id)
+        editorialVO= editorialVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The editorial with id '"+id+"' doesn't exists"));
+
+        if(editorialVORepository.getByName(name) != null && editorialVORepository.getByName(name).getId() != id){
+            throw new FieldAlreadyExistException("The editorial with name '"+name+"' already exists");
+        }
+
         Validations.validString(name);
         editorialVO.setName(Validations.formatNames(name));
         editorialVO.setDischarged(DISCHARGED);
@@ -53,7 +63,22 @@ public class EditorialService {
     }
 
     @Transactional
+    public void discharge(Integer id){
+        EditorialVO editorialVO= editorialVORepository.getById(id)
+                .orElseThrow(()-> new FieldAlreadyExistException("The editorial with id '"+id+"' doesn't exists"));
+        editorialVO.setDischarged(DISCHARGED);
+        editorialVORepository.update(editorialVO);
+    }
+
+    @Transactional
     public EditorialVO findByName(String name){
         return editorialVORepository.getByName(name);
+    }
+
+    @Transactional
+    public EditorialVO findById(Integer id){
+        return editorialVORepository.getById(id).orElseThrow(
+                () -> new NoSuchElementException("The editorial wiyh id '"+id+"' doesn't exists")
+        );
     }
 }

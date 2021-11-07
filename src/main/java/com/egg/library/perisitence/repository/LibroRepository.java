@@ -23,11 +23,9 @@ public class LibroRepository implements BookVORepository {
     private BookMapper bookMapper;
 
     @Override
-    public void createBook(BookVO bookVO) {
+    public BookVO createBook(BookVO bookVO) {
         Libro libro = bookMapper.toLibro(bookVO);
-        System.out.println("Book: "+bookVO.getTitle());
-        System.out.println("Libro: "+libro.getTitulo());
-        libroDAO.save(libro);
+        return bookMapper.toBookVO(libroDAO.save(libro));
     }
 
     @Override
@@ -61,8 +59,23 @@ public class LibroRepository implements BookVORepository {
     }
 
     @Override
-    public List<BookVO> getByTEditorial(Integer editorialId) {
+    public List<BookVO> getByEditorial(Integer editorialId) {
         return bookMapper.toBookVO(libroDAO.findByEditorial(editorialId));
+    }
+
+    @Override
+    public Optional<BookVO> getByTitleAndAuthor(String title,Integer authorId) {
+        return libroDAO.findByTitleAndAuthor(title,authorId).map(book -> bookMapper.toBookVO(book));
+    }
+
+    @Override
+    public List<BookVO> getDismissBooks() {
+        return bookMapper.toBookVO(libroDAO.findDismissBooks());
+    }
+
+    @Override
+    public List<BookVO> getAvaibleBooks() {
+        return bookMapper.toBookVO(libroDAO.findAvaiblesBooks());
     }
 
     @Override

@@ -5,14 +5,19 @@ import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.service.AuthorService;
 import com.egg.library.domain.service.BookService;
 import com.egg.library.domain.service.PictureService;
+import com.egg.library.util.pagination.RenderPages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +36,16 @@ public class AuthorController {
 
 
     @GetMapping(value = "/all")
-    public ModelAndView showAuthors(){
+    public ModelAndView showAuthors(@RequestParam(name = "page",defaultValue = "1")int page, HttpServletRequest request){
+
+        Pageable pageable = PageRequest.of(page -1,8, Sort.by(Sort.Direction.ASC,"nombre"));
+        Page<AuthorVO> authorPage = authorService.findAll(pageable);
+        RenderPages<AuthorVO> renderPages = new RenderPages<AuthorVO>("/all",authorPage);
+
         ModelAndView mav = new ModelAndView("authors");
-        mav.addObject("authors",  authorService.findAllAuthors());
+        mav.addObject("page",renderPages);
+        mav.addObject("authors", authorPage);
+
         return mav;
     }
 

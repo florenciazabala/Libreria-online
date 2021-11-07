@@ -30,24 +30,20 @@
           </select></br>
 
           <label class="mb-3" for="#autor">Autor </label>
-          <select name="autor" class="oS" id="autor" th:with="autor=*{author}">
+          <select name="author" class="oS" id="autor" th:with="author=*{author}">
             <option th:each="author : ${authors}"
-                    th:value="${author.name}"
+                    th:value="${author.idAuthor}"
                     th:text="${author.name}"
                     th:selected="${book.author != null} ? ${author.name} == *{author.name} : false"></option>
-            <option value="otro" class="oS">Otro</option><br>
-            <input type="text"  th:name="otherAuthor" th:id="otherAuthor" class="otro ms-3" maxlength="30">
           </select><br>
 
           <label class="mb-3" for="#editorial">Editorial</label>
           <select name="editorial" class="oS" id="editorial" th:with="editorial=*{editorial}">
             <option th:each="editorial : ${editorials}"
-                    th:value="${editorial.name}"
+                    th:value="${editorial.id}"
                     th:text="${editorial.name}"
                     th:selected="${book.editorial != null} ? ${editorial.name} == *{editorial.name} : false">
-                    </option>
-            <option value="otro" class="oS">Otro</option><br>
-            <input type="text" th:name="otherEditorial" th:id="otherEditorial" class="otro ms-3"  maxlength="30">
+            </option>
           </select><br>
 
           <hr>

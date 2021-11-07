@@ -7,6 +7,9 @@ import com.egg.library.domain.repository.PictureVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.util.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,13 +26,19 @@ public class AuthorService {
     @Autowired
     private PictureService pictureService;
 
+    @Autowired
+    private AuthorVO authorVO;
+
+
     private final Boolean DISCHARGED = Boolean.TRUE;
+
     @Transactional
     public void createAuthor(String name){
         if(authorVORepository.existsByName(name)){
             throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
         }
-        AuthorVO authorVO = new AuthorVO();
+
+        authorVO = new AuthorVO();
         Validations.validString(name);
         authorVO.setName(Validations.formatNames(name));
         authorVO.setDischarged(DISCHARGED);
@@ -47,8 +56,12 @@ public class AuthorService {
 
     @Transactional
     public void updateAuthor(String name, Integer id){
-        AuthorVO authorVO = authorVORepository.getById(id)
+        authorVO = authorVORepository.getById(id)
                 .orElseThrow(()-> new FieldAlreadyExistException("The author with id '"+id+"' doesn't exists"));
+
+        if(authorVORepository.getByName(name) != null && authorVORepository.getByName(name).getIdAuthor() != id){
+            throw new FieldAlreadyExistException("The author with name '"+name+"' already exists");
+        }
 
         Validations.validString(name);
         authorVO.setName(Validations.formatNames(name));
@@ -57,7 +70,12 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public List<AuthorVO> findAllAuthors(){
+    public Page<AuthorVO> findAll(Pageable pageable){
+        return authorVORepository.getAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AuthorVO> findAll(){
         return authorVORepository.getAll();
     }
 

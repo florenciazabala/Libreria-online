@@ -7,32 +7,23 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="prestamos")
+@Table(name="usuarios")
 @EntityListeners(AuditingEntityListener.class)
-public final class Prestamo {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false)
-    private LocalDate fechaPrestamo;
-    @Column(nullable = false)
-    private LocalDate fechaDevolucion;
-    @Column(nullable = false)
-    private Boolean alta;
-
-    @JoinColumn(name="libro_isbn", referencedColumnName = "isbn")
-    @ManyToOne
-    private Libro libro;
-    @JoinColumn(name="cliente_id", referencedColumnName = "id")
-    @ManyToOne
-    private Cliente cliente;
+    @Column(unique = true)
+    private String username;
+    @Column(unique = true)
+    private String mail;
+    private String password;
 
     @CreatedDate
     @Column( updatable = false)
@@ -40,4 +31,5 @@ public final class Prestamo {
 
     @LastModifiedDate
     private LocalDateTime modificacion;
+
 }
