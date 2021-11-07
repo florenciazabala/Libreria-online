@@ -38,6 +38,7 @@ public class PictureService {
         if (multipartFile.isEmpty()) {
             throw new FieldInvalidException("Is not selecting the image to upload");
         }
+
         String nameFormated = name.replaceAll("\\s","");
         String finalPath = createPath(multipartFile,folderLocation,id,nameFormated);
         String relativPath =finalPath.substring(25);
@@ -50,8 +51,7 @@ public class PictureService {
             pictureVO.setName(multipartFile.getName());
             pictureVO.setPath(relativPath);
             pictureVO.setDischarge(DISCHARGE);
-            pictureVORepository.create(pictureVO);
-            return pictureVO;
+            return pictureVORepository.create(pictureVO);
         }catch (Exception e) {
             e.printStackTrace();
             throw new ConflictException("Error during upload: " + multipartFile.getOriginalFilename());

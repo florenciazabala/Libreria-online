@@ -19,8 +19,8 @@ public class FotoRepository implements PictureVORepository {
     private PictureMapper pictureMapper;
 
     @Override
-    public void create(PictureVO pictureVO) {
-        fotoDAO.save(pictureMapper.toFoto(pictureVO));
+    public PictureVO create(PictureVO pictureVO) {
+        return pictureMapper.toPictureVo(fotoDAO.save(pictureMapper.toFoto(pictureVO)));
     }
 
     @Override
