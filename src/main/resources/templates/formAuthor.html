@@ -8,11 +8,8 @@
 <div class="container-fluid">
     <div class="row">
         <div id="backgroudForm" class="col col-md-6 p-0">
-           <!-- <div id="backgroudForm" class="col col-md-6 p-0">
-                <img id="imageGenre" th:src="${author.picture}" class="img-fluid" alt="...">
-            </div>-->
-            <!--th:if="${author.picture == null}}"-->
-            <div class="carousel slide" id="slideAuthors" data-bs-ride="carousel">
+
+            <div th:if="${author.picture == null}" class="carousel slide" id="slideAuthors" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img th:src="@{/images/authorSlide1.jpg}" class="d-block w-100" alt="...">
@@ -25,6 +22,8 @@
                     </div>
                 </div>
             </div>
+
+            <img id="imageGenre" th:unless="${author.picture == null}"  th:src="@{__${author.picture.path}__}" class="img-fluid" alt="...">
         </div>
         <div class="col col-md-6 justify-content-center align-self-center">
             <h5 class="text-center" th:text="${title}"></h5>

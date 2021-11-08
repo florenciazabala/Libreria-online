@@ -23,57 +23,75 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <div class="dropdown show ml-3 mr-3">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="collapse navbar-collapse mr-auto justify-content-end" id="navbarSupportedContent">
+
+      <div class="nav-item dropdown ml-3 mr-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
           Libros
         </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="/books/all">Ver libros</a>
           <a class="dropdown-item" href="/books/create">Crear libro</a>
         </div>
       </div>
-      <div class="dropdown show mr-3">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+      <div class="nav-item dropdown mr-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
           Autores
         </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="/authors/all">Ver autores</a>
           <a class="dropdown-item" href="/authors/create">Crear autores</a>
         </div>
       </div>
-      <div class="dropdown show mr-3">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+      <div class="nav-item dropdown mr-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
           Editoriales
         </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="/editorials/all">Ver editoriales</a>
           <a class="dropdown-item" href="/editorials/create">Crear editorial</a>
         </div>
       </div>
-      <div class="dropdown show mr-3">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+      <div class="nav-item dropdown mr-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
           Clientes
         </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="/customers/all">Ver clientes</a>
           <a class="dropdown-item" href="/customers/create">Crear clientes</a>
         </div>
       </div>
-      <div class="dropdown show mr-3">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+      <div class="nav-item dropdown mr-3">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
           Préstamos
         </a>
 
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="/loans/all">Ver prestamos</a>
           <a class="dropdown-item" href="/loans/create">Crear prestamos</a>
         </div>
       </div>
+
+      <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
+          <img th:src="@{/images/userDefault.jpg}" class="rounded-circle" width="22rem">
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-lg-start me-3"  aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="#">Ver perfil</a>
+          <li><hr class="dropdown-divider"></li>
+          <a class="dropdown-item" href="/logout">Cerrar sesión</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </nav>

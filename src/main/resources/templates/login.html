@@ -9,7 +9,6 @@
     <div class="row">
         <div id="backgroudForm" class="col col-md-6 p-0">
             <img id="imageCustomer" th:src="@{/images/customer.jpg}" class="img-fluid" alt="...">
-            <!--th:if="${author.picture == null}}"-->
         </div>
         <div class="col col-md-6 justify-content-center align-self-center">
             <h5 class="text-center" th:text="${title}"></h5>
@@ -24,10 +23,10 @@
                 <a th:href="@{/signup}">¿Aún no tiene cuenta? Registrarse</a>
             </form>
 
-            <div th:if="${error != null} OR ${logout != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-success'" class="alert alert-dismissible fade show" role="alert">
+            <div th:if="${error != null} OR ${logout != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-success'" class="alert alert-warning alert-dismissible fade show" role="alert">
                 <i th:classappend="${error != null} ? 'fa-times-circle' : 'fa-check-circle'" class="fas "></i>
                 <strong>Resultado de la solicitud</strong> [[${error != null} ? ${error} : ${logout}]]
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
         </div>

@@ -79,10 +79,10 @@ public class AuthorController {
     public final String AUTHORS_UPLOADED_FOLDER = "src/main/resources/static/images/authors/";
     @PostMapping(value = "/save")
     public RedirectView saveAuthor(@RequestParam String name, @RequestParam(required=false) MultipartFile picture){
-        authorService.createAuthor(name);
-        Integer id = authorService.findByName(name).getIdAuthor();
+        AuthorVO authorVO = authorService.createAuthor(name);
+        Integer id = authorVO.getIdAuthor();
         PictureVO pictureVO = pictureService.createPicture(AUTHORS_UPLOADED_FOLDER,String.valueOf(id),name,picture);
-        authorService.updatePicture(pictureVO.getPath(),id);
+        authorService.updatePicture(pictureVO, authorVO);
         return new RedirectView("/authors/all");
     }
 
@@ -96,8 +96,8 @@ public class AuthorController {
                 pictureVO= pictureService.updatePicture(pictureVO,AUTHORS_UPLOADED_FOLDER,String.valueOf(idAuthor),name,picture);
             }
         }
-        authorService.updateAuthor(name,idAuthor);
-        authorService.updatePicture(pictureVO.getPath(),idAuthor);
+        AuthorVO authorVO = authorService.updateAuthor(name,idAuthor);
+        authorService.updatePicture(pictureVO,authorVO);
         return new RedirectView("/authors/all");
     }
 

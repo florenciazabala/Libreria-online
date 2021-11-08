@@ -30,7 +30,7 @@ public final class Autor {
     @OneToMany(mappedBy = "autor",fetch = FetchType.LAZY)
     private List<Libro> libros;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.EAGER)
     private Foto foto;
 
     @CreatedDate

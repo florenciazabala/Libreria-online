@@ -3,6 +3,7 @@ package com.egg.library.web.controller;
 import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.service.CustomerService;
 import com.egg.library.domain.service.UserService;
+import com.egg.library.exeptions.FieldAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +81,7 @@ public class LoginController {
             customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password));
             redirectAttributes.addFlashAttribute("success","Se ha registrado correctamente");
 
-        }catch (Exception e){
+        }catch (FieldAlreadyExistException e){
             redirectAttributes.addFlashAttribute("error",e.getMessage());
             redirectAttributes.addFlashAttribute("name", name);
             redirectAttributes.addFlashAttribute("lastName", lastName);
