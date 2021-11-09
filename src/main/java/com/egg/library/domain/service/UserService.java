@@ -4,7 +4,9 @@ import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.RolVO;
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.UserRepository;
+import com.egg.library.exeptions.BadCredentialsException;
 import com.egg.library.exeptions.FieldAlreadyExistException;
+import com.egg.library.exeptions.InvalidDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -61,6 +63,7 @@ public class UserService implements UserDetailsService {
         setDates(user,username,mail,password,roles);
         userRepository.update(user);
     }
+
 
     private final Boolean DISCHARGE = Boolean.TRUE;
    // private final RolVO ROLEDEFAULT = rolService.findByRole("USER");

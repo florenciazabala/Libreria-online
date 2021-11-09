@@ -12,6 +12,7 @@
                 <h5>Todavía no hay autores cargados.<a th:href="@{/authors/create}">Ingresar libro.</a></h5>
             </div>
             <div class="row row-cols-md-4">
+
                 <div class="col-md-3 mr-4" th:each="author : ${authors}">
                     <div class="card mb-3" style="width: 16rem;">
                         <div class="card-image-container">

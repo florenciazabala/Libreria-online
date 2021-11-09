@@ -30,6 +30,7 @@ public class Usuario {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Rol> roles;
 
+
     @CreatedDate
     @Column( updatable = false)
     private LocalDateTime creacion;

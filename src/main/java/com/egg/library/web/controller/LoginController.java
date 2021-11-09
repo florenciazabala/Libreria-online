@@ -7,9 +7,7 @@ import com.egg.library.domain.service.LoanService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +39,14 @@ public class LoginController {
 
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false)String logout, Principal principal){
+    public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false)String logout, Principal principal, HttpServletRequest request){
 
         ModelAndView modelAndView = new ModelAndView("login");
+
+        Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            modelAndView.addObject("error2", flashMap.get("error"));
+        }
 
         if (error != null) {
             modelAndView.addObject("error", "Usuario o contraseña incorrectos");

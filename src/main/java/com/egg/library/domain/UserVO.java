@@ -1,6 +1,5 @@
 package com.egg.library.domain;
 
-import com.egg.library.perisitence.entity.Rol;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +20,7 @@ public class UserVO {
     private String mail;
     private String password;
     private Boolean discharged;
+
     private List<RolVO> roles;
 
 }
