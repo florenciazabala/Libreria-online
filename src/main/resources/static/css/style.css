@@ -121,10 +121,34 @@ footer{
 .hidden{
     display: none;
 }
-/*Form author*/
+/*List author*/
 .containerListAuthors{
     background-color: #FFFFFF;
     border-radius: 10px;
+}
+
+.card-image-container{
+    width: 18rem;
+    height: 18rem;
+    background: #CCC;
+    overflow: hidden;
+}
+.card-image-container img{
+  width: 100%;
+  height: auto;
+  transition: 0.5s all ease-in-out;
+}
+@supports(object-fit: cover){
+    .card-image-container img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+}
+
+
+.card-image-container:hover img{
+  transform: scale(1.5);
 }
 /*Form author*/
 #formAuthor{
@@ -164,12 +188,25 @@ footer{
 }
 
 .round-image-container{
-     border-radius: 50%;
-      overflow: hidden;
+      border-radius: 50%;
       width: 130px;
       height: 130px;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: contain;
-      background-position: center center;
+      background: #CCC;
+      overflow: hidden;
+}
+.round-image-container img{
+  width: 100%;
+  height: auto;
+  transition: 0.5s all ease-in-out;
+}
+@supports(object-fit: cover){
+    .round-image-container img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+}
+
+.round-image-container:hover img{
+    transform: scale(1.5);
 }

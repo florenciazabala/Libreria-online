@@ -16,5 +16,6 @@ public class UserVO {
     @Email
     private String mail;
     private String password;
+    private Boolean discharged;
 
 }

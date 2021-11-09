@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row">
+        <div id="backgroudForm" class="col col-md-6 p-0">
+            <img id="imageCustomer" th:src="@{/images/customer.jpg}" class="img-fluid" alt="...">
+            <!--th:if="${author.picture == null}}"-->
+        </div>
+        <div class="col col-md-6 justify-content-center align-self-center">
+            <h5 class="text-center" th:text="${title}"></h5>
+            <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
+                  novalidate th:action="@{/customers/__${action}__}" th:object="${customer}">
+
+                <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
+                    <label class="mb-3">
+                        <input type="number" th:if="${action == 'saveModifications'}" th:name="id" th:field="*{id}" readonly required>
+                    </label><br>
+                    <label class="mb-3">Documento <input type="number" th:name="document" th:field="*{document}" min="10000000" max="99999999"></label><br>
+                    <label class="mb-3">Nombre <input type="text" th:name="name" id="name" th:field="*{name}" required> </label><br>
+                    <label class="mb-3">Apellido <input type="text" th:name="lastName" id="lastName" th:field="*{lastName}" required> </label><br>
+                    <label class="mb-3">Mail <input type="email" th:name="mail" id="mail" th:field="*{mail}" required> </label><br>
+                    <label class="mb-3">teléfono <input type="text" th:name="telephone" id="telephone" th:field="*{telephone}" required> </label><br>
+                    <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar' : 'Guardar cambios'"></button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+<script>
+    var myCarousel = document.querySelector('#slideAuthors')
+    var carousel = new bootstrap.Carousel(myCarousel, {
+      interval: 3000,
+    })
+</script>
+</body>
+</html>

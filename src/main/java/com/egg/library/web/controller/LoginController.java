@@ -1,6 +1,5 @@
 package com.egg.library.web.controller;
 
-import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.service.CustomerService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
@@ -28,12 +27,17 @@ public class LoginController {
     private UserService userService;
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false)String logout, Principal principal){
+    public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false)String logout, Principal principal, HttpServletRequest request){
 
         ModelAndView modelAndView = new ModelAndView("login");
 
+        Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            modelAndView.addObject("error2", flashMap.get("error"));
+        }
+
         if (error != null) {
-            modelAndView.addObject("error", "Usuario o contraseña inválida");
+            modelAndView.addObject("error", "Usuario o contraseña incorrectos");
         }
 
         if (logout != null) {

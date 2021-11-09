@@ -2,7 +2,9 @@ package com.egg.library.domain.service;
 
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.UserRepository;
+import com.egg.library.exeptions.BadCredentialsException;
 import com.egg.library.exeptions.FieldAlreadyExistException;
+import com.egg.library.exeptions.InvalidDataException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,19 +51,24 @@ public class UserService implements UserDetailsService {
         setDates(user,username,mail,password);
         userRepository.update(user);
     }
-
+    private final Boolean DISCHARGE = Boolean.TRUE;
     public void setDates(UserVO user,String username,String mail,String password){
         user.setUsername(username);
         user.setMail(mail);
         user.setPassword(encoder.encode(password));
+        user.setDischarged(DISCHARGE);
     }
 
     private final String MESSAGE = "The username doesn't exists %s";
+    private final String MESSAGEDISHARGE = "The account is disabled %s";
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         UserVO userVO = userRepository.findByMailOrUsername(username,username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(MESSAGE, username)));
 
+        if(userVO.getDischarged() == null || userVO.getDischarged() == false){
+            throw new UsernameNotFoundException(String.format("The account is disabled", username));
+        }
         return new User(userVO.getUsername(),userVO.getPassword(), Collections.emptyList());
     }
 

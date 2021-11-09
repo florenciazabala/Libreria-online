@@ -24,6 +24,7 @@ public class Usuario {
     @Column(unique = true)
     private String mail;
     private String password;
+    private Boolean alta;
 
     @CreatedDate
     @Column( updatable = false)
