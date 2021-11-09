@@ -65,10 +65,10 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         UserVO userVO = userRepository.findByMailOrUsername(username,username)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(MESSAGE, username)));
-
+        /*
         if(userVO.getDischarged() == null || userVO.getDischarged() == false){
             throw new UsernameNotFoundException(String.format("The account is disabled", username));
-        }
+        }*/
         return new User(userVO.getUsername(),userVO.getPassword(), Collections.emptyList());
     }
 
