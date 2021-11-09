@@ -3,6 +3,7 @@ package com.egg.library.perisitence.repository;
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.UserRepository;
 import com.egg.library.perisitence.DAO.UsuarioDAO;
+import com.egg.library.perisitence.mapper.RolMapper;
 import com.egg.library.perisitence.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,9 @@ public class UsuarioRepository implements UserRepository {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RolMapper rolMapper;
+
     @Override
     public UserVO create(UserVO userVO) {
         return userMapper.toUser(usuarioDAO.save(userMapper.toUsuario(userVO)));
@@ -25,7 +29,7 @@ public class UsuarioRepository implements UserRepository {
 
     @Override
     public void update(UserVO userVO) {
-        usuarioDAO.update(userVO.getUsername(),userVO.getMail(),userVO.getPassword(),userVO.getId());
+        usuarioDAO.update(userVO.getUsername(),userVO.getMail(),userVO.getPassword(),rolMapper.toRol(userVO.getRoles()),userVO.getId());
     }
 
     @Override

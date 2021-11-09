@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+    <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col col-md-4 m-3 justify-content-center text-center">
+            <img  th:src="@{/images/userDefault.jpg}"  class="rounded-circle" style="width: 10rem;" ><br>
+            <!--
+            <div class="round-image-container p-0" th:unless="${customer.picture == null}" >
+                <img class="rounded mx-auto d-block"  th:src="@{__${customer.picture.path}__}" ><br>
+            </div>-->
+            <button class="btn">Cambiar foto</button>
+        </div>
+        <div class="col col-md-6 justify-content-center align-self-center">
+            <h5 class="text-center" th:text="${title}"></h5>
+            <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
+                  novalidate th:action="@{/customers/__${action}__}" th:object="${customer}">
+
+                <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="mb-3">Nombre<br> <input  th:readonly="${action == null}" type="text" th:name="name" id="name" th:field="*{name}" required> </label><br>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="mb-3">Apellido<br> <input  th:readonly="${action == null}" type="text" th:name="lastName" id="lastName" th:field="*{lastName}" required> </label><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="mb-3">Documento <br><input th:readonly="${action == null}" type="number" th:name="document" th:field="*{document}" min="10000000" max="99999999"></label>
+                        </div>
+                        <div class="col">
+                            <label class="mb-3">Mail <br></be><input type="email" th:name="mail" id="mail" th:field="*{mail}" readonly required> </label><br>
+                        </div>
+                        <div class="col">
+                            <label class="mb-3">Teléfono <input  th:readonly="${action == null}" type="text" th:name="telephone" id="telephone" th:field="*{telephone}" required> </label><br>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col input-group flex-nowrap">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            <input type="text" th:field="*{user.username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="col">
+                            <input type="password" class="form-control" placeholder="Password" aria-label="Last name">
+                        </div>
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Modificar' : 'Guardar cambios'"></button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+    <div class="row d-flex  justify-content-center m-5" style="min-height: 30rem;">
+        <div class="col-10 m-2 containerListAuthors">
+            <div class="alert alert-secondary" role="alert" th:if="${loans.isEmpty()}">
+                <h5>Todavía no hay préstamos cargados.<a th:href="@{/loans/create}">Ingresar préstamo.</a></h5>
+            </div>
+            <div class="row justify-content-center align-content-center">
+                <div class="col-auto mt-4 mb-4">
+                    <table class="table table-responsive justify-self-center" th:unless="${loans.isEmpty()}">
+                        <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Alta</th>
+                            <th scope="col">Vencimiento</th>
+                            <th scope="col">Libro</th>
+                            <th></th>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        </tbody>
+                        <tr th:each="loan : ${loans}">
+                            <th scope="row"  th:text="${loan.id}"></th>
+                            <td  th:text="${#temporals.format(loan.loanDate,'dd/MM/yyyy')}"></td>
+                            <td  th:text="${#temporals.format(loan.returnDate,'dd/MM/yyyy')}"></td>
+                            <td  th:text="${loan.book.title}"></td>
+                            <td>
+                                <a th:href="@{/books/__${loan.book.isbn}__}" class="buttonBook"><i class="fas fa-eye fa-lg"></i></a>
+                            </td>
+                            <td>
+                                <a th:href="@{/loans/update/__${loan.id}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
+                            </td>
+                            <td>
+                                <a th:href="${loan.discharged == true} ? @{/loans/delete/__${loan.id}__}:@{/loans/discharge/__${loan.id}__}" class="buttonBook"><i th:classappend="${loan.discharged == true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+<script>
+    var myCarousel = document.querySelector('#slideAuthors')
+    var carousel = new bootstrap.Carousel(myCarousel, {
+      interval: 3000,
+    })
+</script>
+</body>
+</html>

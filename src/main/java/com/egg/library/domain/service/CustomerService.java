@@ -29,7 +29,13 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public CustomerVO findBId(Integer id){
         return customerVORepository.getById(id)
-                .orElseThrow(()->new NoSuchElementException("The customer with '"+id+"' doesn't exists"));
+                .orElseThrow(()->new NoSuchElementException("The customer with id '"+id+"' doesn't exists"));
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerVO findByUserMail(String mail){
+        return customerVORepository.getByUserMail(mail)
+                .orElseThrow(()->new NoSuchElementException("The customer with mail '"+mail+"' doesn't exists"));
     }
 
     private final Boolean DISCHARGED = Boolean.TRUE;

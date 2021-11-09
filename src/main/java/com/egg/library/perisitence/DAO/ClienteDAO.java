@@ -22,4 +22,7 @@ public interface ClienteDAO extends JpaRepository<Cliente,Integer> {
     List<Cliente> findAll();
 
     Optional<Cliente> findByDocumento(Long documento);
+
+    @Query("SELECT c FROM Cliente c WHERE c.usuario.mail = :mail")
+    Optional<Cliente> findByUserMail(@Param("mail") String mail);
 }

@@ -80,13 +80,14 @@
         </div>
       </div>
 
-      <div class="nav-item dropdown">
+      <div th:if="${session.userSession != null}" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
-          <img th:src="@{/images/userDefault.jpg}" class="rounded-circle" width="22rem">
+          <img th:src="@{/images/userDefault.jpg}" class="rounded-circle" width="22rem" style="display: inline-block !important;">
+          [[${session.userSession.user.username}]]
         </a>
 
         <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end dropdown-menu-lg-start me-3"  aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#">Ver perfil</a>
+          <a class="dropdown-item" th:href="@{/profile/__${session.userSession.user.username}__}">Ver perfil</a>
           <li><hr class="dropdown-divider"></li>
           <a class="dropdown-item" href="/logout">Cerrar sesión</a>
         </div>

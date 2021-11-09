@@ -12,11 +12,12 @@
                 <h5>Todavía no hay autores cargados.<a th:href="@{/authors/create}">Ingresar libro.</a></h5>
             </div>
             <div class="row row-cols-md-4">
-                <div class="col-md-3" th:each="author : ${authors}">
-                    <div class="card mb-3" style="width: 18rem;">
-                        <img th:unless="${author.picture == null}" th:src="@{__${author.picture.path}__}">
-                        <img th:if="${author.picture == null }" th:src="@{/images/userDefault.jpg}">
-                        <!--<img th:src="${(author.picture != null AND !#strings.isEmpty(author.picture)) ? author.picture.path : '/images/userDefault.jpg'" class="card-img-top" alt="...">-->
+                <div class="col-md-3 mr-4" th:each="author : ${authors}">
+                    <div class="card mb-3" style="width: 16rem;">
+                        <div class="card-image-container">
+                            <img th:unless="${author.picture == null}" th:src="@{__${author.picture.path}__}" class="image-author-card">
+                            <img th:if="${author.picture == null }" th:src="@{/images/userDefault.jpg}">
+                        </div>
 
                         <div class="card-body">
                             <table class="table table-borderless">

@@ -1,12 +1,19 @@
 package com.egg.library.web.controller;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.LoanVO;
 import com.egg.library.domain.service.CustomerService;
+import com.egg.library.domain.service.LoanService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,7 +23,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class LoginController {
@@ -25,7 +34,11 @@ public class LoginController {
     private CustomerService customerService;
 
     @Autowired
+    private LoanService loanService;
+
+    @Autowired
     private UserService userService;
+
 
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false)String logout, Principal principal){
@@ -33,7 +46,7 @@ public class LoginController {
         ModelAndView modelAndView = new ModelAndView("login");
 
         if (error != null) {
-            modelAndView.addObject("error", "Usuario o contraseña inválida");
+            modelAndView.addObject("error", "Usuario o contraseña incorrectos");
         }
 
         if (logout != null) {
@@ -78,7 +91,7 @@ public class LoginController {
         RedirectView redirectView = new RedirectView("/login");
         try{
 
-            customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password));
+            customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password,null));
             redirectAttributes.addFlashAttribute("success","Se ha registrado correctamente");
 
         }catch (FieldAlreadyExistException e){
@@ -97,5 +110,24 @@ public class LoginController {
         return redirectView;
     }
 
+    public String getUsername(){
+        Object userLogged = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String mail = ((UserDetails)userLogged).getPassword();
+        return ((UserDetails)userLogged).getUsername();
+    }
+
+    @GetMapping("/profile/{username}")
+    public ModelAndView profile(@PathVariable String username, Principal principal){
+        ModelAndView modelAndView = new ModelAndView("userProfile");
+
+        CustomerVO customerVO = customerService.findByUserMail(principal.getName());
+        List<LoanVO> loansVO = customerVO.getLoans().entrySet().stream().map(l -> loanService.findById(l.getKey()))
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("customer",customerVO);
+        modelAndView.addObject("loans",loansVO);
+
+        return modelAndView;
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.egg.library.web.controller;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.LoanVO;
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.service.CustomerService;
 import com.egg.library.domain.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class CustomerController {
     public ModelAndView showCustomers(){
         ModelAndView mav = new ModelAndView("customers");
         mav.addObject("customers",customerService.findAllCustomers());
+        System.out.println();
         return mav;
     }
 
@@ -60,7 +63,7 @@ public class CustomerController {
     public RedirectView saveCustomer(@RequestParam Long document,@RequestParam String name,@RequestParam String lastName,
                                      @RequestParam String mail, @RequestParam String telephone,
                                      @RequestParam String username, @RequestParam String password){
-        customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password));
+        customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password,null));
         return new RedirectView("/customers/all");
     }
 
@@ -69,7 +72,7 @@ public class CustomerController {
                                      @RequestParam String mail, @RequestParam String telephone,
                                                   @RequestParam String username, @RequestParam String password){
 
-        userService.update(username,mail,password);
+        userService.update(username,mail,password,null);
         customerService.update(id,document,name,lastName,mail,telephone);
         return new RedirectView("/customers/all");
     }
@@ -85,4 +88,5 @@ public class CustomerController {
         customerService.discharged(id);
         return new RedirectView("/customers/all");
     }
+
 }

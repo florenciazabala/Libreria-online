@@ -43,6 +43,11 @@ public class ClienteRepository implements CustomerVORepository {
     }
 
     @Override
+    public Optional<CustomerVO> getByUserMail(String mail) {
+        return clienteDAO.findByUserMail(mail).map(cliente -> customerMapper.toCustomerVO(cliente));
+    }
+
+    @Override
     public List<CustomerVO> getAllCustomers() {
         return customerMapper.toCustomerVO(clienteDAO.findAll());
     }

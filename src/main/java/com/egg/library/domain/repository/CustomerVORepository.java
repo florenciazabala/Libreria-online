@@ -11,5 +11,6 @@ public interface CustomerVORepository {
     void updateCustomer(CustomerVO customerVO);
     Optional<CustomerVO> getById(Integer id);
     Optional<CustomerVO> getByDocument(Long document);
+    Optional<CustomerVO> getByUserMail(String mail);
     List<CustomerVO> getAllCustomers();
 }

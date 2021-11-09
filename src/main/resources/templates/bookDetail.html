@@ -51,13 +51,14 @@
   <div class="col col-md-6 m-4 p-4" id="panelAuthorDetail">
     <div class="row m-2">
       <div class="col col-md-4 align-content-center justify-content-end">
-        <div class="row justify-content-end">
+        <div class="row justify-content-center">
           <img th:if="${book.author.picture == null}" th:src="@{/images/userDefault.jpg}"  class="rounded-circle float-end cardIndex" style="width: 6rem;" ><br>
-          <!--<img th:unless="${book.author.picture == null}" th:src="@{__${book.author.picture.path}__}"  class="rounded-circle float-end cardIndex" style="width: 6rem;" ><br>-->
-          <!--<div th:unless="${book.author.picture == null}" class="round-image-container" th:style="'background: url('+@{__${book.author.picture.path}__}+'); background-repeat: no-repeat, repeat; background-size: cover;'"></div>-->
-          <div class="round-image-container" th:unless="${book.author.picture == null}"  th:style="'background: url('+@{__${book.author.picture.path}__}+') center center;'"></div>
+
+          <div class="round-image-container p-0" th:unless="${book.author.picture == null}" >
+            <img class="rounded mx-auto d-block"  th:src="@{__${book.author.picture.path}__}" ><br>
+          </div>
         </div>
-        <div class="row justify-content-end">
+        <div class="row justify-content-center">
           <a class="btn btn-primary mt-3" th:href="@{/authors/__${book.author.idAuthor}__}" style="width: 6rem;">Ver mas</a>
         </div>
       </div>
