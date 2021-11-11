@@ -1,5 +1,6 @@
 package com.egg.library.mail;
 
+import java.util.Map;
 import java.util.Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,8 @@ public class Config
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(25);
 
-        mailSender.setUsername("yourmail@gmail.com");
-        mailSender.setPassword("yourpass");
+        mailSender.setUsername("${MAIL_ADDRESS}");
+        mailSender.setPassword("${MAIL_PASSWORD}");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

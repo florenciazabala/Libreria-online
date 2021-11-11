@@ -23,9 +23,15 @@
                 <a th:href="@{/signup}">¿Aún no tiene cuenta? Registrarse</a>
             </form>
 
-            <div th:if="${error2 != null} OR ${logout != null}" th:classappend="${error2 != null} ? 'alert-danger' : 'alert-success'" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div th:if="${error != null} OR ${logout != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-warning'" class="alert alert-warning alert-dismissible fade show" role="alert">
                 <i th:classappend="${error != null} ? 'fa-times-circle' : 'fa-check-circle'" class="fas "></i>
-                <strong>Resultado de la solicitud</strong> [[${error2 != null} ? ${error2} : ${logout}]]
+                <strong>Resultado de la solicitud</strong> [[${error != null} ? ${error} : ${logout}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <strong>Resultado de la solicitud</strong> [[${success}]]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 

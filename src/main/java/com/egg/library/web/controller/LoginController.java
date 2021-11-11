@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,16 +45,15 @@ public class LoginController {
         ModelAndView modelAndView = new ModelAndView("login");
 
         Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
-        if (flashMap != null) {
-            modelAndView.addObject("error2", flashMap.get("error"));
-        }
-
         if (error != null) {
             modelAndView.addObject("error", "Usuario o contraseña incorrectos");
         }
 
         if (logout != null) {
             modelAndView.addObject("logout", "Ha salido correctamente de la plataforma");
+        }
+        if(flashMap != null){
+            modelAndView.addObject("success", flashMap.get("success"));
         }
 
         if (principal != null) {
@@ -69,7 +69,6 @@ public class LoginController {
         Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
 
         if (flashMap != null) {
-            modelAndView.addObject("success", flashMap.get("exito"));
             modelAndView.addObject("error", flashMap.get("error"));
             modelAndView.addObject("name", flashMap.get("name"));
             modelAndView.addObject("lastName", flashMap.get("lastName"));
@@ -94,7 +93,7 @@ public class LoginController {
         RedirectView redirectView = new RedirectView("/login");
         try{
 
-            customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password,null));
+            customerService.create(document,name,lastName,telephone,username,mail,password, Collections.emptyList());
             redirectAttributes.addFlashAttribute("success","Se ha registrado correctamente");
 
         }catch (FieldAlreadyExistException e){

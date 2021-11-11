@@ -41,7 +41,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="col-md-1 align-self-center justify-self-end">
+                <div sec:authorize="hasRole('ADMIN')" class="col-md-1 align-self-center justify-self-end">
                     <a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook"><i class="fas fa-edit fa-lg m-4" style="display: block;"></i></a>
                     <a th:href="${book.discharged == true} ? @{/books/delete/__${book.isbn}__}:@{/books/discharge/__${book.isbn}__}" class="buttonBook"><i th:classappend="${book.discharged == true} ? 'fas fa-trash-alt fa-lg m-4' : 'fas fa-upload fa-lg m-4'" class="" style="display: block;"></i></a>
                 </div>
@@ -70,7 +70,7 @@
                    <a type="button submit" class="btn buttonSearch" id="liveAlertBtn" onclick="searcher()">Search</a>
                </div>
            </div>
-           <div class="row ml-4 mb-1" th:if="${books != null}">
+           <div sec:authorize="hasRole('ADMIN')" class="row ml-4 mb-1" th:if="${books != null}">
                <a th:href="${books[0].discharged == false} ? @{/books/all} :@{/books/dismiss}" class="buttonBook" style="text-decoration: none">
                    <i th:classappend="${books[0].discharged == false} ? 'fas fa-check-square fa-lg' : 'far fa-square fa-lg'" class="mr-2"></i>
                    Ver libros dados de baja</a>

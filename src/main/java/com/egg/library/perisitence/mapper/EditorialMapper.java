@@ -30,8 +30,10 @@ public interface EditorialMapper {
 
     default Map<Long,String> fromBook(List<Libro> libros) {
         Map<Long,String> books = new HashMap<>();
-        for (Libro libro : libros){
-            books.put(libro.getIsbn(),libro.getTitulo());
+        if(libros != null){
+            for (Libro libro : libros){
+                books.put(libro.getIsbn(),libro.getTitulo());
+            }
         }
         return books;
     }

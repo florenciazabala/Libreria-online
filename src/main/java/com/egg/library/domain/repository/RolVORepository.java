@@ -12,5 +12,4 @@ public interface RolVORepository {
     Optional<RolVO> getById(Integer id);
     Optional<RolVO> getByRol(String rol);
     List<RolVO> getAll();
-
 }

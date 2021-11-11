@@ -8,9 +8,17 @@
 <div class="container-fluid mt-5 mb-5">
     <div class="row justify-content-center" style="min-height: 30rem;">
         <div class="col-7 mt-5">
+
+            <div th:if="${success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <strong>Resultado de la solicitud</strong> [[${success}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="alert alert-secondary" role="alert" th:if="${customers.isEmpty()}">
                 <h5>Todavía no hay clientes cargados.<a th:href="@{/customers/create}">Ingresar cliente.</a></h5>
             </div>
+
             <div class="card mb-4 " th:each="customer : ${customers}">
                 <div class="row g-0" >
                     <div class="col-md-1 align-self-center text-center">

@@ -26,7 +26,7 @@
                                     <td >
                                         <h6 class="card-title" th:text="${author.name}" style="display: inline-block;"></h6>
                                     </td>
-                                    <td class="justify-content-end">
+                                    <td sec:authorize="hasRole('ADMIN')" class="justify-content-end">
                                         <a th:href="@{/authors/update/__${author.idAuthor}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
                                         <a th:href="${author.discharged == true} ? @{/authors/delete/__${author.idAuthor}__}:@{/authors/discharge/__${author.idAuthor}__}" class="buttonBook"><i th:classappend="${author.discharged == true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
                                     </td>

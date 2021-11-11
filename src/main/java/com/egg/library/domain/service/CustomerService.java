@@ -1,6 +1,7 @@
 package com.egg.library.domain.service;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.RolVO;
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
@@ -18,6 +19,8 @@ public class CustomerService {
     @Autowired
     private CustomerVORepository customerVORepository;
 
+    @Autowired
+    private UserService userService;
 
     @Autowired
     CustomerVO customerVO;
@@ -41,10 +44,13 @@ public class CustomerService {
     private final Boolean DISCHARGED = Boolean.TRUE;
 
     @Transactional
-    public void create(Long document,String name,String lastName,String mail,String telephone,UserVO user){
+    public void create(Long document,String name,String lastName,String telephone,String username,String mail,String password,List<RolVO>rolesVO){
+
         if(customerVORepository.getByDocument(document).isPresent()){
             throw new FieldAlreadyExistException("The client with document'"+document+"' already exists");
         }
+
+        UserVO user = userService.create(username,mail,password,rolesVO);
         setDates(document,name,lastName,mail,telephone,user);
         customerVORepository.createCustomer(customerVO);
     }
@@ -82,6 +88,7 @@ public class CustomerService {
         customerVO = findBId(id);
         customerVO.setDischarged(!DISCHARGED);
         customerVORepository.updateCustomer(customerVO);
+        userService.delete(customerVO.getUser().getId());
     }
 
     @Transactional
@@ -89,5 +96,6 @@ public class CustomerService {
         customerVO = findBId(id);
         customerVO.setDischarged(DISCHARGED);
         customerVORepository.updateCustomer(customerVO);
+        userService.discharge(customerVO.getUser().getId());
     }
 }

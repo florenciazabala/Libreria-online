@@ -3,6 +3,7 @@ package com.egg.library.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
@@ -21,6 +22,7 @@ public class UserVO {
     private String password;
     private Boolean discharged;
 
+    @Nullable
     private List<RolVO> roles;
 
 }

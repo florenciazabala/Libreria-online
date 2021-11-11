@@ -4,9 +4,8 @@ import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.RolVO;
 import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.UserRepository;
-import com.egg.library.exeptions.BadCredentialsException;
 import com.egg.library.exeptions.FieldAlreadyExistException;
-import com.egg.library.exeptions.InvalidDataException;
+import com.egg.library.exeptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,12 +33,15 @@ public class UserService implements UserDetailsService {
     @Autowired
     private  CustomerService customerService;
 
-
     @Autowired
     private BCryptPasswordEncoder encoder;
 
     @Autowired
+    private RolService rolService;
+
+    @Autowired
     UserVO user;
+
 
     @Transactional
     public UserVO create(String username, String mail, String password, List<RolVO> roles){
@@ -59,19 +61,52 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void update(String username,String mail,String password,List<RolVO> roles){
         user= userRepository.findByMail(mail)
-                .orElseThrow(() -> new NoSuchElementException("The user '"+mail+"' doesn't exists"));
-        setDates(user,username,mail,password,roles);
+                .orElseThrow(() -> new NoSuchElementException("The user with mail '"+mail+"' doesn't exists"));
+
+        final RolVO ROLEDEFAULT = rolService.findByRole("USER");
+
+        if(roles.isEmpty() || roles == null){
+            roles = new ArrayList<>();
+            roles.add(ROLEDEFAULT);
+        }
+
+        List<RolVO> rolesToRemove =  user.getRoles();
+        List<RolVO> rolesToAdd = roles;
+
+        if(rolesToAdd !=null && rolesToRemove!=null){
+            rolesToRemove.removeAll(roles);
+            rolesToAdd.removeAll(rolesToRemove);
+        }
+
+        user.setUsername(username);
+        user.setMail(mail);
+        user.setPassword(encoder.encode(password));
+
+        if(rolesToRemove != null){
+            rolesToRemove.forEach(rol -> userRepository.deleteRelationRolUser(user.getId(),rol.getId()));
+        }
+
+        if(rolesToAdd != null){
+            for (RolVO rol  : rolesToAdd) {
+                if(!userRepository.existsRelation(user.getId(),rol.getId())){
+                    userRepository.createRelation(user.getId(),rol.getId());
+                }
+            }
+        }
+
         userRepository.update(user);
     }
 
 
     private final Boolean DISCHARGE = Boolean.TRUE;
-   // private final RolVO ROLEDEFAULT = rolService.findByRole("USER");
-
     public void setDates(UserVO user,String username,String mail,String password,List<RolVO> roles){
-       // if(roles.isEmpty() || roles == null){
-       //     roles.add(ROLEDEFAULT);
-        //}
+
+        final RolVO ROLEDEFAULT = rolService.findByRole("USER");
+
+       if(roles.isEmpty() || roles == null){
+           roles = new ArrayList<>();
+           roles.add(ROLEDEFAULT);
+       }
 
         user.setUsername(username);
         user.setMail(mail);
@@ -100,14 +135,33 @@ public class UserService implements UserDetailsService {
         List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
 
         for(RolVO rol: userVO.getRoles()){
-            roles.add(new SimpleGrantedAuthority(rol.getRole()));
+            roles.add(new SimpleGrantedAuthority("ROLE_"+rol.getRole()));
         }
 
         return new User(userVO.getMail(),userVO.getPassword(), roles);
     }
 
+    @Transactional(readOnly = true)
     public UserVO findByMail(String mail){
         return userRepository.findByMail(mail).orElseThrow(
-                ()-> new NoSuchElementException("there is no registered user with that email"));
+                ()-> new NoSuchElementException("There is no registered user with that email"));
     }
+
+    @Transactional
+    public void delete(Integer id){
+        if(!userRepository.findById(id).isPresent()){
+            throw new NotFoundException("The user doesn't exists");
+        }
+        userRepository.delete(id);
+    }
+
+    @Transactional
+    public void discharge(Integer id){
+        if(!userRepository.findById(id).isPresent()){
+            throw new NotFoundException("The user doesn't exists");
+        }
+        userRepository.discharge(id);
+    }
+
+
 }

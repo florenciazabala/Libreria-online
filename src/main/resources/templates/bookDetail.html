@@ -15,10 +15,10 @@
     <img th:src="@{/images/book.png}" id="imageBookDetail" class="rounded-circle float-center cardIndex" style="width: 10rem;" >
   </div>
 
-  <div class="col col-md-8 mt-5 align-self-center d-flex  justify-content-end">
+  <div class="col col-md-8 mt-5 mr-1 align-self-center d-flex  justify-content-end">
     <!--<a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook justify-self-end" ><div id="anim"></div></a>-->
-    <a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook justify-self-end" ><i class="fas fa-edit fa-2x mr-4" style="display: inline;"></i></a>
-    <a th:href="${book.discharged == true} ? @{/books/delete/__${book.isbn}__}:@{/books/discharge/__${book.isbn}__}" class="buttonBook justify-self-end"><i th:classappend="${book.discharged == true} ? 'fas fa-trash-alt fa-2x ' : 'fas fa-upload fa-2x '" class="mr-5"  style="display: inline;"></i></a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/books/update/__${book.isbn}__}" class="buttonBook justify-self-end" ><i class="fas fa-edit fa-2x mr-4" style="display: inline;"></i></a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="${book.discharged == true} ? @{/books/delete/__${book.isbn}__}:@{/books/discharge/__${book.isbn}__}" class="buttonBook justify-self-end"><i th:classappend="${book.discharged == true} ? 'fas fa-trash-alt fa-2x ' : 'fas fa-upload fa-2x '" class="me-5"  style="display: inline;"></i></a>
   </div>
 </div>
 
@@ -75,7 +75,7 @@
   </div>
 </div>
 
-  <div class="row justify-content-center mb-5" >
+  <div sec:authorize="hasRole('ADMIN')" class="row justify-content-center mb-5" >
     <div class="col col-md-10 m-5 p-5 text-center" id="panelLoadsDetail">
       <h6>Préstamos</h6><br>
       <div class="alert alert-secondary" role="alert" th:if="${loans.isEmpty()}">

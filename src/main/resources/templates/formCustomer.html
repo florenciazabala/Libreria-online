@@ -12,22 +12,38 @@
             <!--th:if="${author.picture == null}}"-->
         </div>
         <div class="col col-md-6 justify-content-center align-self-center">
+
+            <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-times-circle"></i>
+                <strong>Resultado de la solicitud</strong> [[${error}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <h5 class="text-center" th:text="${title}"></h5>
             <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
-                  novalidate th:action="@{/customers/__${action}__}" th:object="${customer}">
+                  novalidate th:action="@{/customers/__${action}__}">
 
                 <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
-                    <label class="mb-3">
-                        <input type="number" th:if="${action == 'saveModifications'}" th:name="id" th:field="*{id}" readonly required>
-                    </label><br>
-                    <label class="mb-3">Documento <input type="number" th:name="document" th:field="*{document}" min="10000000" max="99999999"></label><br>
-                    <label class="mb-3">Nombre <input type="text" th:name="name" id="name" th:field="*{name}" required> </label><br>
-                    <label class="mb-3">Apellido <input type="text" th:name="lastName" id="lastName" th:field="*{lastName}" required> </label><br>
-                    <label class="mb-3">Mail <input type="email" th:name="mail" id="mail" th:field="*{mail}" required> </label><br>
-                    <label class="mb-3">teléfono <input type="text" th:name="telephone" id="telephone" th:field="*{telephone}" required> </label><br>
+                    <label class="mb-3">Id<input type="number" th:if="${id} != null" th:name="id" th:value="${id}" readonly></label>
+                    <label class="mb-3">Documento <input type="number" name="document" th:value="${document}"  min="10000000" max="99999999"></label><br>
+                    <label class="mb-3">Nombre <input type="text" name="name" id="name" th:value="${name}" required> </label><br>
+                    <label class="mb-3">Apellido <input type="text" name="lastName" id="lastName" th:value="${lastName}"  required> </label><br>
+                    <label class="mb-3">Mail <input type="email" name="mail" id="mail" th:value="${mail}" required> </label><br>
+                    <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
+                    <label class="mb-3">Nombre de usuario <input type="text" name="username" th:value="${username}"  required> </label><br>
+                    <label class="mb-3">Contraseña <input type="password" name="password" th:value="${password}" required> </label><br>
+                    <h6>Roles</h6>
+                    <div th:each="rol : ${roles}" class="form-check">
+                        <input th:id="${rol.role}" th:name="rolChecked" th:value="${rol.role}"
+                                th:checked="${rolesUser} == null ? ${rol.role} == 'USER' :  ${rol.role} == 'USER' "  class="form-check-input" type="checkbox"  id="flexCheckDefault">
+                        <label th:for="${rol.role}" th:text="${rol.role}" class="form-check-label" for="flexCheckDefault">
+                        </label>
+                    </div>
+
                     <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar' : 'Guardar cambios'"></button>
                 </fieldset>
             </form>
+
         </div>
     </div>
 </div>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="../static/layouts/layout :: head">
+  <title>Create book</title>
+</head>
+<body id="bookListPage">
+<nav th:replace="../static/layouts/layout :: navbar"></nav>
+<div class="container-fluid" style="backgroud-color: #5575C5">
+  <div class="row">
+      <h1 style="color: #FFFFFF">404</h1>
+      <h5 style="color: #FFFFFF">Not found</h5>
+      <p style="color: #FFFFFF">Lo sentimos</p>
+  </div>
+</div>
+<footer th:replace="../static/layouts/layout :: footer"></footer>
+<script>
+    var myCarousel = document.querySelector('#slideAuthors')
+    var carousel = new bootstrap.Carousel(myCarousel, {
+      interval: 3000,
+    })
+</script>
+</body>
+</html>

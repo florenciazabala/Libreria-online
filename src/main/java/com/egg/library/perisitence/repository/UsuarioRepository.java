@@ -29,7 +29,7 @@ public class UsuarioRepository implements UserRepository {
 
     @Override
     public void update(UserVO userVO) {
-        usuarioDAO.update(userVO.getUsername(),userVO.getMail(),userVO.getPassword(),rolMapper.toRol(userVO.getRoles()),userVO.getId());
+        usuarioDAO.update(userVO.getUsername(),userVO.getMail(),userVO.getPassword(),userVO.getId());
     }
 
     @Override
@@ -45,5 +45,38 @@ public class UsuarioRepository implements UserRepository {
     @Override
     public Optional<UserVO> findByUsername(String username) {
         return usuarioDAO.findByUsername(username).map(usuario -> userMapper.toUser(usuario));
+    }
+
+    @Override
+    public Optional<UserVO> findById(Integer id) {
+        return usuarioDAO.findById(id).map(usuario -> userMapper.toUser(usuario));
+    }
+
+    @Override
+    public void delete(Integer id) {
+        usuarioDAO.deleteById(id);
+    }
+
+    @Override
+    public void discharge(Integer id) {
+        usuarioDAO.updateAlta(id);
+    }
+
+    @Override
+    public void deleteRelationRolUser(Integer idUser, Integer idRol) {
+        usuarioDAO.deleteRelationUserRol(idUser,idRol);
+    }
+
+    @Override
+    public void createRelation(Integer idUser, Integer idRol) {
+        usuarioDAO.saveRelation(idUser,idRol);
+    }
+
+    @Override
+    public Boolean existsRelation(Integer idUser, Integer idRol) {
+        if(usuarioDAO.existsRelation(idUser,idRol)==0){
+            return false;
+        }
+        return true;
     }
 }

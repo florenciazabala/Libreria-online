@@ -12,6 +12,7 @@ import com.egg.library.domain.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -94,6 +95,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView createBook(){
         ModelAndView mav = new ModelAndView("formBook");
         mav.addObject("book",new BookVO());
@@ -104,6 +106,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/update/{isbn}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView updateBook(@PathVariable Long isbn){
         ModelAndView mav = new ModelAndView("formBook");
 
@@ -115,6 +118,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/save")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView saveBook(@RequestParam Long isbn,
                                  @RequestParam String title,@RequestParam Integer year,
                                  @RequestParam("genero") String genre,@RequestParam("author") Integer author,
@@ -133,6 +137,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/saveModifications")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView saveModificationsBook(@RequestParam Long isbn,
                                               @RequestParam String title, @RequestParam Integer year,
                                               @RequestParam("genero") String genre, @RequestParam("author") Integer author,
@@ -149,12 +154,14 @@ public class BookController {
     }
 
     @GetMapping (value = "/delete/{isbn}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView deleteBook(@PathVariable Long isbn){
         bookService.delete(isbn);
         return new RedirectView("/books/all");
     }
 
     @GetMapping (value = "/discharge/{isbn}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView dischargeBook(@PathVariable Long isbn){
         bookService.discharge(isbn);
         return new RedirectView("/books/all");
