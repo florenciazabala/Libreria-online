@@ -22,7 +22,7 @@
 
             <h5 class="text-center">Registrarse</h5>
             <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
-                  novalidate th:action="@{/save-signup}" >
+                   th:action="@{/save-signup}" >
 
                 <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
                     <!--<label class="mb-3">
@@ -34,7 +34,7 @@
                     <label class="mb-3">Mail <input type="email" name="mail" id="mail" th:value="${mail}" required> </label><br>
                     <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
                     <label class="mb-3">Nombre de usuario <input type="text" name="username" th:value="${username}"  required> </label><br>
-                    <label class="mb-3">Contraseña <input type="text" name="password" th:value="${password}" required> </label><br>
+                    <label class="mb-3">Contraseña <input type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" name="password" th:value="${password}" required> </label><br>
                     <button type="submit" class="btn btn-primary mt-3 mb-3">Registrarse</button>
                 </fieldset>
             </form>

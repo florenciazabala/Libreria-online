@@ -48,14 +48,16 @@
 
           <hr>
           <label class="mb-3" >Cantidad de ejemplares
-            <input type="number" name="copy" id="copy" max="999" value=1 th:field="*{copy}" required >
+            <input type="number" name="copy" id="copy" max="999" value=1 th:field="*{copy}" onchange="getCopyes()" required >
           </label><br>
           <label class="mb-3" >Ejemplares en préstamo
             <input type="number" name="loanedcopy" id="loanedcopy" max="999" th:field="*{loanedCopy}" required >
           </label><br>
-          <!--<select >
-            <option th:each="i : ${#numbers.sequence(0, #{form.copy})}" th:value="${i}" th:text="${i}"></option>
+          <!--
+          <select  id="selectCopyes" onclick="countCopies()">
+            <option th:each="i : ${#numbers.sequence(0, countCopies())}" th:value="${i}" th:text="${i}"></option>
           </select><br>-->
+          <select id="mySelect"></select>
           <hr>
           <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar libro' : 'Guardar cambios'"></button>
         </fieldset>
@@ -64,7 +66,7 @@
   </div>
 </div>
 <footer th:replace="../static/layouts/layout :: footer"></footer>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script th:inline="javascript">
 
 genero.addEventListener("change",()=>{
@@ -101,6 +103,20 @@ $(document).ready(function(){
         }
     });
 });
+
+function getCopyes(){
+  var max = document.getElementById("copy").value;
+  var min = 0;
+ for (i = min; i <= max; i++){
+     $('#mySelect').append($('<option>',
+     {
+        value: i,
+        text : ""+i
+    }));
+}
+}
+
 </script>
+
 </body>
 </html>
