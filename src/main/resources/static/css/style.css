@@ -160,6 +160,22 @@ footer{
     margin-left: -55px;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 }
+.round-image-container-cutomerList{
+     margin-left: -55px;
+     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+     border-radius: 50%;
+     width: 6rem;
+     height: 6rem;
+     background: #CCC;
+     overflow: hidden;
+}
+@supports(object-fit: cover){
+    .round-image-container-cutomerList img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+}
 #customerListPage{
     background-color: #E9E9E9;
 }
@@ -209,4 +225,59 @@ footer{
 
 .round-image-container:hover img{
     transform: scale(1.5);
+}
+
+.unborder{
+    border: none;
+}
+
+.labelSee{
+    justify: center;
+    color: #BABFC4;
+    font-weight: 700;
+}
+.round-image-container-cutomerDetail{
+     border-radius: 50%;
+     width: 10rem;
+     height: 10rem;
+     background: #CCC;
+     overflow: hidden;
+}
+@supports(object-fit: cover){
+    .round-image-container-cutomerDetail img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+}
+
+.round-image-container-cutomerDetail:hover img{
+    transform: scale(1.5);
+}
+
+
+.round-image-container-cutomerLoans{
+     border-radius: 50%;
+     width: 64px;
+     height: 64px;
+     background: #CCC;
+     overflow: hidden;
+}
+@supports(object-fit: cover){
+    .round-image-container-cutomerLoans img{
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+}
+
+
+.inputLogin{
+    border: none;
+    background-color:#F6F6F6;
+}
+
+.buttonLogin{
+    background-color: $indigo-900;
+
 }

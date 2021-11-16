@@ -5,6 +5,7 @@ import com.egg.library.domain.EditorialVO;
 import com.egg.library.domain.service.BookService;
 import com.egg.library.domain.service.EditorialService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,12 +34,13 @@ public class EditorialController {
     @GetMapping(value = "/all")
     public ModelAndView showeditoriales(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("editorials");
-        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
 
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
         if (flashMap != null) {
             mav.addObject("success", flashMap.get("success-name"));
             mav.addObject("error", flashMap.get("error-name"));
         }
+
         mav.addObject("editorials",  editorialService.findAllEditorials());
         return mav;
     }
@@ -57,8 +59,15 @@ public class EditorialController {
     }
 
     @GetMapping(value = "/create")
-    public ModelAndView createAuthor(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView createAuthor(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("formEditorial");
+
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            mav.addObject("error", flashMap.get("error-name"));
+        }
+
         mav.addObject("editorial",new EditorialVO());
         mav.addObject("title","Crear editorial");
         mav.addObject("action", "save");
@@ -66,10 +75,17 @@ public class EditorialController {
     }
 
     @GetMapping(value = "/update/{id}")
-    public ModelAndView updateAuthor(@PathVariable Integer id){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView updateAuthor(@PathVariable Integer id,HttpServletRequest request){
         ModelAndView mav = null;
         try{
             mav = new ModelAndView("formEditorial");
+
+            Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+            if (flashMap != null) {
+                mav.addObject("error", flashMap.get("error-name"));
+            }
+
             mav.addObject("editorial",editorialService.findById(id));
             mav.addObject("title","Modificar editorial");
             mav.addObject("action", "saveModifications");
@@ -80,28 +96,37 @@ public class EditorialController {
     }
 
     @PostMapping(value = "/save")
-    public RedirectView saveAuthor(@RequestParam String name, RedirectAttributes attributes){
+    @PreAuthorize("hasRole('ADMIN')")
+    public RedirectView saveAuthor(@RequestParam String name,RedirectAttributes attributes){
+
+        RedirectView redirectView = new RedirectView("/editorials/all");
         try {
             editorialService.createEditorial(name);
             attributes.addFlashAttribute("success-name","La editorial ha sido creado exitosamente");
         }catch (Exception e){
             attributes.addFlashAttribute("error-name",e.getMessage());
+            redirectView.setUrl("/editorials/create");
         }
-        return new RedirectView("/editorials/all");
+        return redirectView;
     }
 
     @PostMapping(value = "/saveModifications")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView saveChangesAuthor(@RequestParam String name, @RequestParam Integer id, RedirectAttributes attributes){
+
+        RedirectView redirectView = new RedirectView("/editorials/all");
         try {
             editorialService.updateEditorial(name, id);
             attributes.addFlashAttribute("success-name","La editorial ha sido actualizado exitosamente");
         }catch (Exception e){
             attributes.addFlashAttribute("error-name",e.getMessage());
+            redirectView.setUrl("/editorials/update/"+id);
         }
-        return new RedirectView("/editorials/all");
+        return redirectView;
     }
 
     @GetMapping (value = "/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView deleteAuthor(@PathVariable Integer id){
         try {
             editorialService.delete(id);
@@ -113,6 +138,7 @@ public class EditorialController {
     }
 
     @GetMapping (value = "/discharge/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public RedirectView dischargeAuthor(@PathVariable Integer id){
         try {
             editorialService.discharge(id);

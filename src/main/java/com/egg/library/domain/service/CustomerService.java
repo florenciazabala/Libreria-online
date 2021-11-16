@@ -1,8 +1,6 @@
 package com.egg.library.domain.service;
 
-import com.egg.library.domain.CustomerVO;
-import com.egg.library.domain.RolVO;
-import com.egg.library.domain.UserVO;
+import com.egg.library.domain.*;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.util.Validations;
@@ -44,7 +42,7 @@ public class CustomerService {
     private final Boolean DISCHARGED = Boolean.TRUE;
 
     @Transactional
-    public void create(Long document,String name,String lastName,String telephone,String username,String mail,String password,List<RolVO>rolesVO){
+    public CustomerVO create(Long document,String name,String lastName,String telephone,String username,String mail,String password,List<RolVO>rolesVO){
 
         if(customerVORepository.getByDocument(document).isPresent()){
             throw new FieldAlreadyExistException("The client with document'"+document+"' already exists");
@@ -52,7 +50,7 @@ public class CustomerService {
 
         UserVO user = userService.create(username,mail,password,rolesVO);
         setDates(document,name,lastName,mail,telephone,user);
-        customerVORepository.createCustomer(customerVO);
+        return customerVORepository.createCustomer(customerVO);
     }
 
     @Transactional
@@ -65,6 +63,12 @@ public class CustomerService {
         }
         setDates(document,name,lastName,mail,telephone,customerVO.getUser());
         customerVORepository.updateCustomer(customerVO);
+    }
+
+    @Transactional
+    public void updatePicture(PictureVO pictureVO, CustomerVO customerVO){
+        customerVO.setPicture(pictureVO);
+        customerVORepository.updateFoto(pictureVO,customerVO.getId());
     }
 
     public void setDates(Long document,String name,String lastName,String mail,String telephone,UserVO user){

@@ -46,8 +46,8 @@ public class BookService {
         bookVO = bookVORepository.getByIsbn(isbn)
                 .orElseThrow(() -> new NoSuchElementException("The book with isbn '"+isbn+"' doesn't exists"));
 
-        if( bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).isPresent() && bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).get().getIsbn() != isbn){
-            throw new FieldAlreadyExistException("The book with title '"+title+"' already exists");
+        if( bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).isPresent() && !bookVORepository.getByTitleAndAuthor(title,author.getIdAuthor()).get().getIsbn().equals(isbn)){
+            throw new FieldAlreadyExistException("The book with title '"+title+"' and author '"+author.getName()+"' already exists");
         }
 
         setDates(bookVO,isbn,title,year,genre,author,editorial,copy,loanedCopy);

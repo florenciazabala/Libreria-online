@@ -7,10 +7,18 @@
 <nav th:replace="../static/layouts/layout :: navbar"></nav>
 <div class="container-fluid mt-5 mb-5">
     <div class="row d-flex  justify-content-center m-5" style="min-height: 30rem;">
+
+        <div th:if="${success != null}"  class="alert alert-success alert-dismissible fade show mt-2 mb-2" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <strong>Resultado de la solicitud</strong> [[${success}]]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <div class="col-8 m-2 containerListAuthors">
             <div class="alert alert-secondary" role="alert" th:if="${loans.isEmpty()}">
                 <h5>Todavía no hay préstamos cargados.<a th:href="@{/loans/create}">Ingresar préstamo.</a></h5>
             </div>
+
             <div class="row justify-content-center">
                 <div class="col-auto mt-4 mb-4">
                     <table class="table table-responsive justify-self-center" th:unless="${loans.isEmpty()}">

@@ -16,9 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,9 +45,15 @@ public class BookController {
     private LoanService loanService;
 
     @GetMapping(value = "/all")
-    public ModelAndView showBooks(){
-
+    public ModelAndView showBooks(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
+
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+
+        if (flashMap != null) {
+            mav.addObject("success", flashMap.get("success-name"));
+        }
+
         mav.addObject("books",  bookService.findAllBooks());
         mav.addObject("title","Listado de libros");
         mav.addObject("checked",false);
@@ -96,8 +105,14 @@ public class BookController {
 
     @GetMapping(value = "/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView createBook(){
+    public ModelAndView createBook(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("formBook");
+
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            mav.addObject("error", flashMap.get("error-name"));
+        }
+
         mav.addObject("book",new BookVO());
         mav.addObject("authors",  authorService.findAll());
         mav.addObject("editorials",editorialService.findAllEditorials());
@@ -107,8 +122,13 @@ public class BookController {
 
     @GetMapping(value = "/update/{isbn}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView updateBook(@PathVariable Long isbn){
+    public ModelAndView updateBook(@PathVariable Long isbn,HttpServletRequest request){
         ModelAndView mav = new ModelAndView("formBook");
+
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            mav.addObject("error", flashMap.get("error-name"));
+        }
 
         mav.addObject("book",bookService.findByIsbn(isbn));
         mav.addObject("authors", authorService.findAll());
@@ -123,17 +143,20 @@ public class BookController {
                                  @RequestParam String title,@RequestParam Integer year,
                                  @RequestParam("genero") String genre,@RequestParam("author") Integer author,
                                  @RequestParam("editorial") Integer editorial,
-                                 @RequestParam Integer copy,@RequestParam Integer loanedCopy){
+                                 @RequestParam Integer copy,@RequestParam Integer loanedCopy, RedirectAttributes attributes){
+        RedirectView redirectView = new RedirectView("/books/all");
         try{
             AuthorVO authorVO = authorService.findById(author);
             EditorialVO editorialVO = editorialService.findById(editorial);
 
             bookService.create(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
+            attributes.addFlashAttribute("success-name","El libro ha sido creado exitosamente");
         }catch (Exception e){
-
+            attributes.addFlashAttribute("error-name",e.getMessage());
+            redirectView.setUrl("/books/save");
         }
 
-        return new RedirectView("/books/all");
+        return redirectView;
     }
 
     @PostMapping(value = "/saveModifications")
@@ -142,15 +165,21 @@ public class BookController {
                                               @RequestParam String title, @RequestParam Integer year,
                                               @RequestParam("genero") String genre, @RequestParam("author") Integer author,
                                               @RequestParam("editorial") Integer editorial,
-                                              @RequestParam Integer copy, @RequestParam Integer loanedCopy){
+                                              @RequestParam Integer copy, @RequestParam Integer loanedCopy, RedirectAttributes attributes){
+        RedirectView redirectView =  new RedirectView("/books/all");
 
+        try {
+            AuthorVO authorVO = authorService.findById(author);
 
-        AuthorVO authorVO = authorService.findById(author);
+            EditorialVO editorialVO = editorialService.findById(editorial);
 
-        EditorialVO editorialVO = editorialService.findById(editorial);
-
-        bookService.update(isbn,title,year,genre,authorVO,editorialVO,copy,loanedCopy);
-        return new RedirectView("/books/all");
+            bookService.update(isbn, title, year, genre, authorVO, editorialVO, copy, loanedCopy);
+            attributes.addFlashAttribute("success-name","El libro ha sido actualizado exitosamente");
+        }catch (Exception e){
+            attributes.addFlashAttribute("error-name",e.getMessage());
+            redirectView.setUrl("/books/update/"+isbn);
+        }
+        return redirectView;
     }
 
     @GetMapping (value = "/delete/{isbn}")

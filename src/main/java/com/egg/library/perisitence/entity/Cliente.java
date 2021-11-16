@@ -41,6 +41,9 @@ public final class Cliente {
     @OneToOne
     private Usuario usuario;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    private Foto foto;
+
     @CreatedDate
     @Column( updatable = false)
     private LocalDateTime creacion;

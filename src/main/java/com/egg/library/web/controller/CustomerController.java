@@ -1,17 +1,17 @@
 package com.egg.library.web.controller;
 
-import com.egg.library.domain.CustomerVO;
-import com.egg.library.domain.LoanVO;
-import com.egg.library.domain.RolVO;
-import com.egg.library.domain.UserVO;
+import com.egg.library.domain.*;
 import com.egg.library.domain.service.CustomerService;
+import com.egg.library.domain.service.PictureService;
 import com.egg.library.domain.service.RolService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.exeptions.FieldInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/customers")
+@PreAuthorize("hasRole('ADMIN')")
 public class CustomerController {
 
     @Autowired
@@ -34,6 +35,9 @@ public class CustomerController {
 
     @Autowired
     private RolService rolService;
+
+    @Autowired
+    private PictureService pictureService;
 
     @GetMapping(value = "/all")
     public ModelAndView showCustomers(HttpServletRequest request){
@@ -98,6 +102,7 @@ public class CustomerController {
         modelAndView.addObject("username", customerVO.getUser().getUsername());
         //modelAndView.addObject("password", customerVO.getUser().getPassword());
         modelAndView.addObject("rolesUser", customerVO.getUser().getRoles());
+        modelAndView.addObject("picture", customerVO.getPicture());
 
         modelAndView.addObject("roles",rolService.findAll());
         modelAndView.addObject("title","Modificar cliente");
@@ -137,21 +142,33 @@ public class CustomerController {
         return redirectView;
     }
 
+    public final String CUSTOMERS_UPLOADED_FOLDER ="src/main/resources/static/images/customers/";
     @PostMapping(value = "/saveModifications")
-    public RedirectView saveModificationsCustomer(@RequestParam Integer id,@RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
+    public RedirectView saveModificationsCustomer(@RequestParam Integer id, @RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
                                                   @RequestParam String mail, @RequestParam String telephone,
                                                   @RequestParam String username, @RequestParam String password, @RequestParam("rolChecked") List<String> roles,
-                                                  RedirectAttributes redirectAttributes){
+                                                  @RequestParam(value = "picture",required = false) MultipartFile picture, RedirectAttributes redirectAttributes){
 
         RedirectView redirectView = new RedirectView("/customers/all");
-        System.out.println("Id: "+id);
+
         try{
             List<RolVO> rolesVO = Collections.emptyList();
             if(roles != null){
                 rolesVO = roles.stream().map(rol -> rolService.findByRole(rol)).collect(Collectors.toList());
             }
+
+            PictureVO pictureVO = customerService.findBId(id).getPicture();
+            if(picture != null){
+                if(pictureVO == null){
+                    pictureVO= pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),name.trim()+","+lastName.trim(),picture);
+                }else{
+                    pictureVO= pictureService.updatePicture(pictureVO,CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),name.trim()+","+lastName.trim(),picture);
+                }
+            }
+
             customerService.update(id,document,name,lastName,mail,telephone);
             userService.update(username,mail,password,rolesVO);
+            customerService.updatePicture(pictureVO, customerService.findBId(id));
             //customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password, Collections.emptyList()));
             redirectAttributes.addFlashAttribute("success","Los cambios se han efectuado correctamente");
 

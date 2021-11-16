@@ -2,10 +2,14 @@ package com.egg.library.web.controller;
 
 import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.LoanVO;
+import com.egg.library.domain.PictureVO;
+import com.egg.library.domain.RolVO;
 import com.egg.library.domain.service.CustomerService;
 import com.egg.library.domain.service.LoanService;
+import com.egg.library.domain.service.PictureService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
+import com.egg.library.exeptions.FieldInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -37,6 +42,9 @@ public class LoginController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PictureService pictureService;
 
 
     @GetMapping("/login")
@@ -85,15 +93,19 @@ public class LoginController {
         return modelAndView;
     }
 
+    public final String CUSTOMERS_UPLOADED_FOLDER ="src/main/resources/static/images/customers/";
     @PostMapping(value = "/save-signup")
     public RedirectView saveCustomer(@RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
                                      @RequestParam String mail, @RequestParam String telephone,
-                                     @RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes){
+                                     @RequestParam String username, @RequestParam String password,
+                                     @RequestParam(required=false) MultipartFile picture, RedirectAttributes redirectAttributes){
 
         RedirectView redirectView = new RedirectView("/login");
         try{
 
-            customerService.create(document,name,lastName,telephone,username,mail,password, Collections.emptyList());
+            CustomerVO customerVO = customerService.create(document,name,lastName,telephone,username,mail,password, Collections.emptyList());
+            PictureVO pictureVO = pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(customerVO.getId()),name.trim()+","+lastName.trim(),picture);
+            customerService.updatePicture(pictureVO, customerVO);
             redirectAttributes.addFlashAttribute("success","Se ha registrado correctamente");
 
         }catch (FieldAlreadyExistException e){
@@ -119,8 +131,13 @@ public class LoginController {
     }
 
     @GetMapping("/profile/{username}")
-    public ModelAndView profile(@PathVariable String username, Principal principal){
+    public ModelAndView profile(@PathVariable String username, Principal principal, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView("userProfile");
+
+        Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            modelAndView.addObject("error", flashMap.get("error"));
+        }
 
         CustomerVO customerVO = customerService.findByUserMail(principal.getName());
         List<LoanVO> loansVO = customerVO.getLoans().entrySet().stream().map(l -> loanService.findById(l.getKey()))
@@ -128,8 +145,58 @@ public class LoginController {
 
         modelAndView.addObject("customer",customerVO);
         modelAndView.addObject("loans",loansVO);
+        modelAndView.addObject("action","#");
 
         return modelAndView;
+    }
+
+    @GetMapping("/profile/update/{username}")
+    public ModelAndView updateProfile(@PathVariable String username, Principal principal, HttpServletRequest request){
+        ModelAndView modelAndView = new ModelAndView("userProfile");
+
+        Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if (flashMap != null) {
+            modelAndView.addObject("error", flashMap.get("error"));
+        }
+
+        CustomerVO customerVO = customerService.findByUserMail(principal.getName());
+        List<LoanVO> loansVO = customerVO.getLoans().entrySet().stream().map(l -> loanService.findById(l.getKey()))
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("customer",customerVO);
+        modelAndView.addObject("loans",loansVO);
+        modelAndView.addObject("action","/profile/save-profile");
+
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/profile/save-profile")
+    public RedirectView saveModificationsCustomer(@RequestParam Integer id, @RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
+                                                  @RequestParam String mail, @RequestParam String telephone,
+                                                  @RequestParam("user.username") String username, @RequestParam String password, RedirectAttributes redirectAttributes){
+
+        RedirectView redirectView = new RedirectView("/profile/"+username);
+        System.out.println("Estoy en el post");
+        try{
+            customerService.update(id,document,name,lastName,mail,telephone);
+            userService.update(username,mail,password);
+            redirectAttributes.addFlashAttribute("success","Los cambios se han efectuado correctamente");
+
+        }catch (FieldAlreadyExistException | FieldInvalidException e){
+            redirectAttributes.addFlashAttribute("error",e.getMessage());
+            /*
+            redirectAttributes.addFlashAttribute("id", id);
+            redirectAttributes.addFlashAttribute("name", name);
+            redirectAttributes.addFlashAttribute("lastName", lastName);
+            redirectAttributes.addFlashAttribute("document", document);
+            redirectAttributes.addFlashAttribute("mail", mail);
+            redirectAttributes.addFlashAttribute("telephone", telephone);
+            redirectAttributes.addFlashAttribute("username", username);
+            redirectAttributes.addFlashAttribute("password", password);*/
+            redirectView.setUrl("/profile/update/"+username);
+        }
+
+        return redirectView;
     }
 
 }

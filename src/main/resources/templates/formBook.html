@@ -11,12 +11,19 @@
       <img id="imageGenre" th:src="@{/images/historia.jpg}" class="img-fluid" alt="...">
     </div>
     <div class="col col-md-6 justify-content-center align-self-center">
+
+      <div th:if="${error != null} OR ${success != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-success'" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i th:classappend="${error != null} ? 'fa-times-circle' : 'fa-check-circle'" class="fas "></i>
+        <strong>Resultado de la solicitud</strong> [[${error != null} ? ${error} : ${success}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
       <form method="POST" enctype="multipart/form-data" class="text-center mt-2"
-            novalidate th:action="@{/books/__${action}__}" th:object="${book}">
+             th:action="@{/books/__${action}__}" th:object="${book}">
 
         <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formLibro">
           <label class="mb-3 mt-3" >ISBN
-            <input type="number" name="isbn1" id="isbn1" max="999" class="example-popover isbn isbn3 text-center"
+            <input type="number" name="isbn1" id="isbn1" min="1000000000000" max="9999999999999" class="example-popover isbn isbn3 text-center"
                    th:field="*{isbn}" th:readonly="${book.isbn != null}" data-toggle="popover" data-img="/images/isbn.png" title="Formato ISBN" required >
           </label><br>
           <label class="mb-3">Título <input type="text" name="titulo" id="" th:field="*{title}" required> </label><br>

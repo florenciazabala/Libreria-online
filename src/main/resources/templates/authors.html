@@ -11,6 +11,13 @@
             <div class="alert alert-secondary" role="alert" th:if="${authors.isEmpty()}">
                 <h5>Todavía no hay autores cargados.<a th:href="@{/authors/create}">Ingresar libro.</a></h5>
             </div>
+
+            <div th:if="${success != null}"  class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <strong>Resultado de la solicitud</strong> [[${success}]]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <div class="row row-cols-md-4">
 
                 <div class="col-md-3 mr-4" th:each="author : ${authors}">

@@ -2,15 +2,16 @@
 <html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="../static/layouts/layout :: head">
     <title>Create book</title>
+    <script src="jquery-3.5.1.min.js"></script>
 </head>
 <body id="bookListPage">
-<nav th:replace="../static/layouts/layout :: navbar"></nav>
+
 <div class="container-fluid">
     <div class="row">
 
         <div id="backgroudForm" class="col col-md-6 p-0">
             <img id="imageCustomer" th:src="@{/images/customer.jpg}" class="img-fluid" alt="...">
-            <!--th:if="${author.picture == null}}"-->
+
         </div>
         <div class="col col-md-6 justify-content-center align-self-center">
 
@@ -25,28 +26,120 @@
                    th:action="@{/save-signup}" >
 
                 <fieldset class="shadow p-3 mb-3 bg-white rounded" id="formCustomer">
-                    <!--<label class="mb-3">
-                        <input type="number" th:if="${action == 'saveModifications'}"  readonly required>
-                    </label><br>-->
                     <label class="mb-3">Documento <input type="number" name="document" th:value="${document}"  min="10000000" max="99999999"></label><br>
                     <label class="mb-3">Nombre <input type="text" name="name" id="name" th:value="${name}" required> </label><br>
                     <label class="mb-3">Apellido <input type="text" name="lastName" id="lastName" th:value="${lastName}"  required> </label><br>
                     <label class="mb-3">Mail <input type="email" name="mail" id="mail" th:value="${mail}" required> </label><br>
                     <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
                     <label class="mb-3">Nombre de usuario <input type="text" name="username" th:value="${username}"  required> </label><br>
-                    <label class="mb-3">Contraseña <input type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" name="password" th:value="${password}" required> </label><br>
+                    <label class="mb-3">Contraseña <input id="password" type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" name="password" th:value="${password}" required> </label><br>
+                    <div id="regex" style="display: none;">
+                        <p><i class="fas fa-times" style="color: red;" id="cantCaracteres"></i> Contiene al menos 8 caracteres</p>
+                        <p><i class="fas fa-times" style="color: red;" id="mayusc"></i> Contiene al menos una mayúscula</p>
+                        <p><i class="fas fa-times" style="color: red;" id="minusc"></i> Contiene al menos una minúscula</p>
+                        <p><i class="fas fa-times" style="color: red;" id="num"></i> Contiene al menos 1 carater numérico</p>
+                        <p><i class="fas fa-times" style="color: red;" id="especial"></i> Contiene al menos 1 carater especial</p>
+                    </div>
+                    <div class="mb-3" >
+                        <label for="picture" class="form-label">Foto de perfil</label>
+                        <input class="form-control" type="file" id="picture" th:name="picture" th:value="${picture}">
+                    </div>
                     <button type="submit" class="btn btn-primary mt-3 mb-3">Registrarse</button>
                 </fieldset>
             </form>
         </div>
     </div>
 </div>
-<footer th:replace="../static/layouts/layout :: footer"></footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-    var myCarousel = document.querySelector('#slideAuthors')
-    var carousel = new bootstrap.Carousel(myCarousel, {
-      interval: 3000,
-    })
+
+     var password = document.querySelector('#password')
+     var regex = document.querySelector('#regex')
+
+     var cantCarateres = document.querySelector('#cantCaracteres')
+     var mayusc = document.querySelector('#mayusc')
+     var minusc = document.querySelector('#minusc')
+     var num = document.querySelector('#num')
+     var esp = document.querySelector('#especial')
+
+     password.onclick= function(){
+           regex.style.display="block";
+     }
+
+     password.onblur= function(){
+           regex.style.display="none";
+     }
+
+     password.onchange = function(){
+        var valor = password.value;
+
+        if(valor.length>= 8){
+             cantCarateres.className = "fas fa-check";
+             cantCarateres.style.color = "#51fc66";
+        }else{
+             cantCarateres.className = "fas fa-times";
+             cantCarateres.style.color = "red";
+        }
+
+
+        var expresionNum = /\d+/
+        if(valor.match(expresionNum)){
+            num.className = "fas fa-check";
+            num.style.color = "#51fc66";
+        }else{
+             num.className = "fas fa-times";
+             num.style.color = "red";
+        }
+
+        var expresionMayusc = /[A-Z]+/
+        if(valor.match(expresionMayusc)){
+            mayusc.className = "fas fa-check";
+            mayusc.style.color = "#51fc66";
+        }else{
+             mayusc.className = "fas fa-times";
+             mayusc.style.color = "red";
+        }
+
+        var expresionMinusc = /[a-z]+/
+        if(valor.match(expresionMinusc)){
+            minusc.className = "fas fa-check";
+            minusc.style.color = "#51fc66";
+        }else{
+             minusc.className = "fas fa-times";
+             minusc.style.color = "red";
+        }
+
+        var expresionEspecial = /[!@#$%^&*_=+-]+/
+        if(valor.match(expresionEspecial)){
+            esp.className = "fas fa-check";
+            esp.style.color = "#51fc66";
+        }else{
+             esp.className = "fas fa-times";
+             esp.style.color = "red";
+        }
+
+     }
+
+
+
+/*
+$('#password').click(function(){
+        $('#regex').css('display', 'block');
+  })
+
+
+$('#password').change(function(){
+        console.log($('#password').val().length)
+        if($('#password').val().length >= 8){
+
+             $('#cantCarateres').addClass('fas fa-check')
+        }else{
+              $('#cantCarateres') .removeClass()
+             $('#cantCarateres').addClass('fas fa-times')
+        }
+  })*/
+
 </script>
 </body>
 </html>

@@ -34,9 +34,9 @@ class LoanServiceTest {
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        loans = getLoansList();
+        //loans = getLoansList();
     }
-
+/*
     public List<LoanVO> getLoansList(){
         List<LoanVO> loans = new ArrayList<>();
         BookVO book = new BookVO(2342634263426L,"Crónicas marcianas",1950, Genre.CUENTO,3,2,1,true,new AuthorVO(),new EditorialVO(),null);
@@ -54,7 +54,7 @@ class LoanServiceTest {
 
         return loans;
     }
-
+*/
     @Test
     void create_when_loan_already_exists() {
         LoanVO loan = loans.get(0);

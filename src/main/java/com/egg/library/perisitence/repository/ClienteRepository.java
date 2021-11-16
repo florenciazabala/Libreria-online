@@ -1,10 +1,13 @@
 package com.egg.library.perisitence.repository;
 
 import com.egg.library.domain.CustomerVO;
+import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.perisitence.DAO.ClienteDAO;
 import com.egg.library.perisitence.entity.Cliente;
+import com.egg.library.perisitence.entity.Foto;
 import com.egg.library.perisitence.mapper.CustomerMapper;
+import com.egg.library.perisitence.mapper.PictureMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +23,9 @@ public class ClienteRepository implements CustomerVORepository {
     @Autowired
     private CustomerMapper customerMapper;
 
+    @Autowired
+    private PictureMapper pictureMapper;
+
     @Override
     public CustomerVO createCustomer(CustomerVO customerVO) {
         return customerMapper.toCustomerVO(clienteDAO.save(customerMapper.toCliente(customerVO)));
@@ -30,6 +36,12 @@ public class ClienteRepository implements CustomerVORepository {
         Cliente cliente = customerMapper.toCliente(customerVO);
         clienteDAO.update(cliente.getDocumento(),cliente.getNombre(),cliente.getApellido(),cliente.getMail(),cliente.getTelefono(),
                 cliente.getAlta(),cliente.getUsuario(),cliente.getId());
+    }
+
+    @Override
+    public void updateFoto(PictureVO pictureVO, Integer id) {
+        Foto foto = pictureMapper.toFoto(pictureVO);
+        clienteDAO.updateFoto(foto,id);
     }
 
     @Override

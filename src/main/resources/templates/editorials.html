@@ -9,54 +9,64 @@
 
   <div class="row d-flex  justify-content-center m-5" style="min-height: 30rem;">
 
-    <div th:if="${error != null} OR ${success != null}" th:classappend="${error != null} ? 'alert-danger' : 'alert-success'" class="alert alert-dismissible fade show" role="alert">
-      <i th:classappend="${error != null} ? 'fa-times-circle' : 'fa-check-circle'" class="fas "></i>
-      <strong>Resultado de la solicitud</strong> [[${error != null} ? ${error} : ${success}]]
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-    </div>
+      <div th:if="${success != null}"  class="alert alert-success alert-dismissible fade show mt-2 mb-2" role="alert">
+          <i class="fas fa-check-circle"></i>
+          <strong>Resultado de la solicitud</strong> [[${success}]]
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
 
     <div class="col-8 m-2 containerListAuthors">
 
       <div class="alert alert-secondary" role="alert" th:if="${editorials.isEmpty()}">
         <h5>Todavía no hay editorials cargadas.<a th:href="@{/editorials/create}">Ingresar editorial.</a></h5>
       </div>
+
       <div class="row justify-content-center">
-        <td class="col-auto mt-4 mb-4">
+        <div class="col-auto mt-4 mb-4">
           <table class="table table-responsive justify-self-center" th:unless="${editorials.isEmpty()}">
             <thead class="table-dark">
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col">name</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">name</th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                </tr>
             </thead>
 
-            </tbody>
-            <tr th:each="editorial : ${editorials}">
-                  <th scope="row"  th:text="${editorial.id}"></th>
-                  <td  th:text="${editorial.name}"></td>
-                  <td>
-                    <a th:href="@{/editorials/update/__${editorial.id}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
-                  </td>
-                  <td>
-                    <a th:href="${editorial.discharged == true} ? @{/editorials/delete/__${editorial.id}__}:@{/editorials/discharge/__${editorial.id}__}" class="buttonBook"><i th:classappend="${editorial.discharged== true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
-                  </td>
-                  <td>
-                    <a th:href="@{/editorials/all}" class="buttonBook"><i class="fas fa-eye fa-lg"></i></a>
-                  </td>
-                  <table class="table table-responsive justify-self-center table-bordered">
-                    <tr scope="row" th:if="${editorial.books} != null" th:each="book : ${editorial.books}">
-                      <td scope="col"  th:text="${book.value}"></td>
-                        <td>
-                            <a th:href="@{/books/__${book.key}__}" class="buttonBook"><i class="fas fa-eye fa-lg"></i></a>
-                        </td>
-                    </tr>
-                  </table>
-            </tr>
+            <tbody>
+                <tr th:each="editorial : ${editorials}">
+                      <th scope="row"  th:text="${editorial.id}"></th>
+                      <td  th:text="${editorial.name}"></td>
+                      <td>
+                        <a th:href="@{/editorials/update/__${editorial.id}__}" class="buttonBook"><i class="fas fa-edit fa-lg"></i></a>
+                      </td>
+                      <td>
+                        <a th:href="${editorial.discharged == true} ? @{/editorials/delete/__${editorial.id}__}:@{/editorials/discharge/__${editorial.id}__}" class="buttonBook"><i th:classappend="${editorial.discharged== true} ? 'fas fa-trash-alt fa-lg' : 'fas fa-upload fa-lg'" class=""></i></a>
+                      </td>
+                      <td>
+                          <a href="#" class="buttonBook" th:onclick="'javascript:seeHidden(' + ${editorial.id} + ')'">Ver libros  <i class="fas fa-chevron-down fa-lg ml-2" th:id="__${editorial.id}__iconShow"></i></a>
+                      </td>
 
+
+                      <table class="table table-responsive justify-self-center">
+
+                         <tr scope="row" th:if="${editorial.books.isEmpty()}"  th:id="${editorial.id}" class="hidden">
+                            <td scope="col">Aún no hay libros cargados</td>
+                         </tr>
+
+                        <tr scope="row" th:unless="${editorial.books} == null" th:each="book : ${editorial.books}" th:id="${editorial.id}" class="hidden">
+                          <td scope="col"  th:text="${book.value}"></td>
+                            <td>
+                                <a th:href="@{/books/__${book.key}__}" class="buttonBook"><i class="fas fa-eye fa-lg"></i></a>
+                            </td>
+                        </tr>
+
+                      </table>
+
+                </tr>
             </tbody>
+
           </table>
         </div>
       </div>
@@ -65,5 +75,21 @@
 
 </div>
 <footer th:replace="../static/layouts/layout :: footer"></footer>
+
+<script>
+    function seeHidden(id) {
+        var button = id;
+        var x = document.getElementById(""+button+"");
+        var icon = document.getElementById(id+"iconShow");
+        if (x.style.display === "none") {
+          x.style.display = "table-row";
+          icon.className = "fas fa-chevron-up fa-lg ml-2";
+
+        } else {
+          x.style.display = "none";
+          icon.className = "fas fa-chevron-down fa-lg ml-2";
+        }
+    }
+</script>
 </body>
 </html>

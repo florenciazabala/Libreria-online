@@ -97,6 +97,17 @@ public class UserService implements UserDetailsService {
         userRepository.update(user);
     }
 
+    @Transactional
+    public void update(String username,String mail,String password){
+        user= userRepository.findByMail(mail)
+                .orElseThrow(() -> new NoSuchElementException("The user with mail '"+mail+"' doesn't exists"));
+
+        user.setUsername(username);
+        user.setMail(mail);
+        user.setPassword(encoder.encode(password));
+        userRepository.update(user);
+    }
+
 
     private final Boolean DISCHARGE = Boolean.TRUE;
     public void setDates(UserVO user,String username,String mail,String password,List<RolVO> roles){

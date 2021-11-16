@@ -22,7 +22,10 @@
             <div class="card mb-4 " th:each="customer : ${customers}">
                 <div class="row g-0" >
                     <div class="col-md-1 align-self-center text-center">
-                        <img th:src="@{/images/userDefault.jpg}" id="imageCustomercard" class="rounded-circle float-start cardIndex" alt="Image book" >
+                        <img th:if="${customer.picture == null}" th:src="@{/images/userDefault.jpg}" id="imageCustomercard" class="rounded-circle float-start cardIndex" alt="Image user" >
+                        <div th:unless="${customer.picture == null}"  class="round-image-container-cutomerList p-0 align-self-center">
+                            <img th:unless="${customer.picture == null}" th:src="@{__${customer.picture.path}__}" class="cardIndex" alt="Image user" >
+                        </div>
                     </div>
                     <div class="col-md-5 align-self-center">
                         <div class="card-body text-center">

@@ -82,7 +82,8 @@
 
       <div th:if="${session.userSession != null}" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #FFFFFF !important;">
-          <img th:src="@{/images/userDefault.jpg}" class="rounded-circle" width="22rem" style="display: inline-block !important;">
+          <img th:if="${session.userSession.picture} == null" th:src="@{/images/userDefault.jpg}" class="rounded-circle" width="22rem" style="display: inline-block !important;">
+          <img th:unless="${session.userSession.picture} == null" th:src="@{__${session.userSession.picture.path}__}" class="rounded-circle" width="22rem" style="display: inline-block !important;">
           [[${session.userSession.user.username}]]
         </a>
 
