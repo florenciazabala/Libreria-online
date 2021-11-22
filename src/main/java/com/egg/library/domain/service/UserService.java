@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -156,6 +157,11 @@ public class UserService implements UserDetailsService {
     public UserVO findByMail(String mail){
         return userRepository.findByMail(mail).orElseThrow(
                 ()-> new NoSuchElementException("There is no registered user with that email"));
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<UserVO> findByUsername(String username){
+        return userRepository.findByUsername(username);
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.egg.library.domain.service;
 import com.egg.library.domain.*;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.exeptions.FieldAlreadyExistException;
+import com.egg.library.mail.MailNotificationService;
 import com.egg.library.util.Validations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,10 @@ public class CustomerService {
     private UserService userService;
 
     @Autowired
-    CustomerVO customerVO;
+    private CustomerVO customerVO;
+
+    @Autowired
+    private MailNotificationService mailNotificationService;
 
     @Transactional(readOnly = true)
     public List<CustomerVO> findAllCustomers(){
@@ -50,7 +54,9 @@ public class CustomerService {
 
         UserVO user = userService.create(username,mail,password,rolesVO);
         setDates(document,name,lastName,mail,telephone,user);
-        return customerVORepository.createCustomer(customerVO);
+        customerVO = customerVORepository.createCustomer(customerVO);
+        mailNotificationService.sendWelcomeMail("Bienvenido a booking", customerVO , ""+customerVO.getUser().getMail());
+        return customerVO;
     }
 
     @Transactional

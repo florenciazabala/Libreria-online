@@ -31,7 +31,9 @@
                     <label class="mb-3">Apellido <input type="text" name="lastName" id="lastName" th:value="${lastName}"  required> </label><br>
                     <label class="mb-3">Mail <input type="email" name="mail" id="mail" th:value="${mail}" required> </label><br>
                     <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
-                    <label class="mb-3">Nombre de usuario <input type="text" name="username" th:value="${username}"  required> </label><br>
+                    <label class="mb-3">Nombre de usuario <input type="text" name="username" id="username" th:value="${username}"  required> </label><br>
+                    <p id="textVerify"></p>
+
                     <label class="mb-3">Contraseña <input id="password" type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" name="password" th:value="${password}" required> </label><br>
                     <div id="regex" style="display: none;">
                         <p><i class="fas fa-times" style="color: red;" id="cantCaracteres"></i> Contiene al menos 8 caracteres</p>
@@ -41,7 +43,7 @@
                         <p><i class="fas fa-times" style="color: red;" id="especial"></i> Contiene al menos 1 carater especial</p>
                     </div>
                     <div class="mb-3" >
-                        <label for="picture" class="form-label">Foto de perfil</label>
+                         <label for="picture" class="form-label">Foto de perfil</label>
                         <input class="form-control" type="file" id="picture" th:name="picture" th:value="${picture}">
                     </div>
                     <button type="submit" class="btn btn-primary mt-3 mb-3">Registrarse</button>
@@ -52,6 +54,7 @@
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
 
      var password = document.querySelector('#password')
@@ -123,22 +126,41 @@
 
 
 
-/*
-$('#password').click(function(){
-        $('#regex').css('display', 'block');
-  })
+/*--------- Web socket ------------*/
 
+const ws = new WebSocket('ws://localhost:8080/socket');
 
-$('#password').change(function(){
-        console.log($('#password').val().length)
-        if($('#password').val().length >= 8){
+function connect() {
+	ws.onmessage = function(data) {
+		textVerify(data.data);
+	}
+}
 
-             $('#cantCarateres').addClass('fas fa-check')
-        }else{
-              $('#cantCarateres') .removeClass()
-             $('#cantCarateres').addClass('fas fa-times')
-        }
-  })*/
+function disconnect() {
+	if (ws != null) {
+		ws.close();
+	}
+
+	console.log("Websocket is in disconnected state");
+}
+
+function sendData() {
+    connect();
+	var data = JSON.stringify({
+		'user' : $("#username").val()
+	})
+	ws.send(data);
+}
+
+function textVerify(message) {
+	$("#textVerify").text(" " + message + "");
+}
+
+$(function() {
+	$("#username").change(function() {
+		sendData();
+	});
+});
 
 </script>
 </body>

@@ -10,7 +10,9 @@ import com.egg.library.domain.service.PictureService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.exeptions.FieldInvalidException;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class LoginController {
+
 
     @Autowired
     private CustomerService customerService;
@@ -98,14 +101,16 @@ public class LoginController {
     public RedirectView saveCustomer(@RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
                                      @RequestParam String mail, @RequestParam String telephone,
                                      @RequestParam String username, @RequestParam String password,
-                                     @RequestParam(required=false) MultipartFile picture, RedirectAttributes redirectAttributes){
+                                     @RequestParam(required=false)@Value("${picture.value:@null}") MultipartFile picture, RedirectAttributes redirectAttributes){
 
         RedirectView redirectView = new RedirectView("/login");
         try{
 
             CustomerVO customerVO = customerService.create(document,name,lastName,telephone,username,mail,password, Collections.emptyList());
-            PictureVO pictureVO = pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(customerVO.getId()),name.trim()+","+lastName.trim(),picture);
-            customerService.updatePicture(pictureVO, customerVO);
+            if(picture != null && !picture.isEmpty()){
+                PictureVO pictureVO = pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(customerVO.getId()),name.trim()+","+lastName.trim(),picture);
+                customerService.updatePicture(pictureVO, customerVO);
+            }
             redirectAttributes.addFlashAttribute("success","Se ha registrado correctamente");
 
         }catch (FieldAlreadyExistException e){
@@ -130,8 +135,8 @@ public class LoginController {
         return ((UserDetails)userLogged).getUsername();
     }
 
-    @GetMapping("/profile/{username}")
-    public ModelAndView profile(@PathVariable String username, Principal principal, HttpServletRequest request){
+    @GetMapping("/profile")
+    public ModelAndView profile(Principal principal, HttpServletRequest request){
         ModelAndView modelAndView = new ModelAndView("userProfile");
 
         Map<String,?> flashMap = RequestContextUtils.getInputFlashMap(request);
@@ -166,7 +171,7 @@ public class LoginController {
         modelAndView.addObject("customer",customerVO);
         modelAndView.addObject("loans",loansVO);
         modelAndView.addObject("action","/profile/save-profile");
-
+        modelAndView.addObject("actionPicture","/profile/save-picture");
         return modelAndView;
     }
 
@@ -175,7 +180,7 @@ public class LoginController {
                                                   @RequestParam String mail, @RequestParam String telephone,
                                                   @RequestParam("user.username") String username, @RequestParam String password, RedirectAttributes redirectAttributes){
 
-        RedirectView redirectView = new RedirectView("/profile/"+username);
+        RedirectView redirectView = new RedirectView("/profile");
         System.out.println("Estoy en el post");
         try{
             customerService.update(id,document,name,lastName,mail,telephone);
@@ -198,5 +203,35 @@ public class LoginController {
 
         return redirectView;
     }
+
+    @PostMapping(value = "/profile/save-picture")
+    public RedirectView savePicture(@RequestParam Integer id,@RequestParam MultipartFile picture, RedirectAttributes redirectAttributes){
+
+        RedirectView redirectView = new RedirectView("/profile");
+
+        CustomerVO customerVO = customerService.findBId(id);
+
+        try{
+
+            PictureVO pictureVO = customerService.findBId(id).getPicture();
+            if(picture != null){
+                if(pictureVO == null){
+                    pictureVO= pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),customerVO.getName().trim()+","+customerVO.getLastName().trim(),picture);
+                }else{
+                    pictureVO= pictureService.updatePicture(pictureVO,CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),customerVO.getName().trim()+","+customerVO.getLastName().trim(),picture);
+                }
+            }
+
+            customerService.updatePicture(pictureVO, customerService.findBId(id));
+            redirectAttributes.addFlashAttribute("success","Los cambios se han efectuado correctamente");
+
+        }catch (FieldAlreadyExistException | FieldInvalidException e){
+            redirectAttributes.addFlashAttribute("error",e.getMessage());
+            redirectView.setUrl("/profile");
+        }
+
+        return redirectView;
+    }
+
 
 }

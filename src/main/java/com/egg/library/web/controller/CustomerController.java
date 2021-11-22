@@ -8,6 +8,7 @@ import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.exeptions.FieldInvalidException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -147,7 +148,7 @@ public class CustomerController {
     public RedirectView saveModificationsCustomer(@RequestParam Integer id, @RequestParam Long document, @RequestParam String name, @RequestParam String lastName,
                                                   @RequestParam String mail, @RequestParam String telephone,
                                                   @RequestParam String username, @RequestParam String password, @RequestParam("rolChecked") List<String> roles,
-                                                  @RequestParam(value = "picture",required = false) MultipartFile picture, RedirectAttributes redirectAttributes){
+                                                  @RequestParam(required = false) @Value("${picture.value:@null}") MultipartFile picture, RedirectAttributes redirectAttributes){
 
         RedirectView redirectView = new RedirectView("/customers/all");
 
@@ -158,17 +159,19 @@ public class CustomerController {
             }
 
             PictureVO pictureVO = customerService.findBId(id).getPicture();
-            if(picture != null){
+            if(picture != null && !picture.isEmpty()){
                 if(pictureVO == null){
                     pictureVO= pictureService.createPicture(CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),name.trim()+","+lastName.trim(),picture);
                 }else{
                     pictureVO= pictureService.updatePicture(pictureVO,CUSTOMERS_UPLOADED_FOLDER,String.valueOf(id),name.trim()+","+lastName.trim(),picture);
                 }
+
+                customerService.updatePicture(pictureVO, customerService.findBId(id));
             }
 
             customerService.update(id,document,name,lastName,mail,telephone);
             userService.update(username,mail,password,rolesVO);
-            customerService.updatePicture(pictureVO, customerService.findBId(id));
+
             //customerService.create(document,name,lastName,mail,telephone,userService.create(username,mail,password, Collections.emptyList()));
             redirectAttributes.addFlashAttribute("success","Los cambios se han efectuado correctamente");
 

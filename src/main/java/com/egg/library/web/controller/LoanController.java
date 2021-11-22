@@ -17,7 +17,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +39,7 @@ public class LoanController {
 
     @GetMapping("/all")
     public ModelAndView showAllLoans(HttpServletRequest request){
-        ModelAndView mav = new ModelAndView("loans");
+        ModelAndView mav = new ModelAndView("dashboard");
 
         Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
         if (flashMap != null) {
@@ -45,32 +47,99 @@ public class LoanController {
             mav.addObject("error", flashMap.get("error-name"));
         }
 
-        mav.addObject("loans",loanService.findAllLoans());
+
+        mav.addObject("actualDate",LocalDate.now());
+
+        mav.addObject("loansExpired",loanService.findLoansExpired());
+        mav.addObject("loansExpiredNow",loanService.findLoansByReturnDate(LocalDate.now(),null));
+        mav.addObject("loansExpiredInTheNextWeek",loanService.findLoansByReturnDate(LocalDate.now().plusDays(1),LocalDate.now().plusDays(14)));
+        mav.addObject("books",bookService.findAllBooks());
+        mav.addObject("customers",customerService.findAllCustomers());
         return mav;
     }
 
     @GetMapping("/{id}")
     public ModelAndView searchById(@PathVariable Integer id){
-        ModelAndView mav = new ModelAndView("loans");
+        ModelAndView mav = new ModelAndView("dashboard");
         List<LoanVO> loans = new ArrayList<>();
         loans.add(loanService.findById(id));
-        mav.addObject("loans",loans);
+
+        mav.addObject("actualDate",LocalDate.now());
+
+        mav.addObject("loansExpired", loans.stream().filter(l -> l.getReturnDate().isBefore(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("loansExpiredNow",loans.stream().filter(l -> l.getReturnDate().isEqual(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("loansExpiredInTheNextWeek",loans.stream().filter(l -> l.getReturnDate().isAfter(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("books",bookService.findAllBooks());
+        mav.addObject("customers",customerService.findAllCustomers());
         return mav;
     }
 
     @GetMapping(value = "/expired")
     public ModelAndView searchLoansExpired(){
-        ModelAndView mav = new ModelAndView("loans");
+        ModelAndView mav = new ModelAndView("dashboard");
         mav.addObject("loans",loanService.findLoansExpired());
         return mav;
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @GetMapping(value = "",params = {"fromDate","toDate"})
-    public ModelAndView searchByReturnDate(@RequestParam LocalDate fromDate,@RequestParam(required = false) LocalDate toDate){
-        ModelAndView mav = new ModelAndView("loans");
-        mav.addObject("loans",loanService.findLoansByReturnDate(fromDate,toDate));
+    public ModelAndView searchByReturnDate(@RequestParam(name = "fromDate") String fromDate,@RequestParam(name = "toDate") String toDate){
+        ModelAndView mav = new ModelAndView("dashboard");
+        LocalDate loanDate = LocalDate.parse(fromDate);
+        LocalDate returnDate = LocalDate.parse(toDate);
+
+        List<LoanVO> loans = loanService.findLoansByReturnDate(loanDate,returnDate);
+        mav.addObject("loansExpired", loans.stream().filter(l -> l.getReturnDate().isBefore(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("loansExpiredNow",loans.stream().filter(l -> l.getReturnDate().isEqual(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("loansExpiredInTheNextWeek",loans.stream().filter(l -> l.getReturnDate().isAfter(LocalDate.now())).collect(Collectors.toList()));
+        mav.addObject("books",bookService.findAllBooks());
+        mav.addObject("customers",customerService.findAllCustomers());
         return mav;
     }
+
+    @GetMapping(value = "",params = {"bookIsbn"})
+    public ModelAndView searchByBook(@RequestParam(name = "bookIsbn") Long bookIsbn){
+        ModelAndView mav = new ModelAndView("dashboard");
+
+        List<LoanVO> loans = loanService.findLoansByBook(bookIsbn);
+        if(loans != null){
+            mav.addObject("loansExpired", loans.stream().filter(l -> l.getReturnDate().isBefore(LocalDate.now())).collect(Collectors.toList()));
+            mav.addObject("loansExpiredNow",loans.stream().filter(l -> l.getReturnDate().isEqual(LocalDate.now())).collect(Collectors.toList()));
+            mav.addObject("loansExpiredInTheNextWeek",loans.stream().filter(l -> l.getReturnDate().isAfter(LocalDate.now())).collect(Collectors.toList()));
+        }else{
+            mav.addObject("loansExpired", Collections.EMPTY_LIST);
+            mav.addObject("loansExpiredNow",Collections.EMPTY_LIST);
+            mav.addObject("loansExpiredInTheNextWeek",Collections.EMPTY_LIST);
+        }
+
+        mav.addObject("books",bookService.findAllBooks());
+        mav.addObject("customers",customerService.findAllCustomers());
+        return mav;
+    }
+
+    @GetMapping(value = "",params = {"customerId"})
+    public ModelAndView searchByCustomer(@RequestParam(name = "customerId") Integer customerId){
+        ModelAndView mav = new ModelAndView("dashboard");
+
+        List<LoanVO> loans = loanService.findLoansByCustomer(customerId);
+
+        if(loans != null){
+            mav.addObject("loansExpired", loans.stream().filter(l -> l.getReturnDate().isBefore(LocalDate.now())).collect(Collectors.toList()));
+            mav.addObject("loansExpiredNow",loans.stream().filter(l -> l.getReturnDate().isEqual(LocalDate.now())).collect(Collectors.toList()));
+            mav.addObject("loansExpiredInTheNextWeek",loans.stream().filter(l -> l.getReturnDate().isAfter(LocalDate.now())).collect(Collectors.toList()));
+        }else{
+            mav.addObject("loansExpired", Collections.EMPTY_LIST);
+            mav.addObject("loansExpiredNow",Collections.EMPTY_LIST);
+            mav.addObject("loansExpiredInTheNextWeek",Collections.EMPTY_LIST);
+        }
+
+        mav.addObject("books",bookService.findAllBooks());
+        mav.addObject("customers",customerService.findAllCustomers());
+        return mav;
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     protected List<BookVO> getAvaibleBooks(){
         return  bookService.findAllBooks().stream().filter(
                 book -> book.getAvaibleCopy()>0

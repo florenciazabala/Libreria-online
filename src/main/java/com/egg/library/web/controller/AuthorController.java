@@ -7,6 +7,7 @@ import com.egg.library.domain.service.BookService;
 import com.egg.library.domain.service.PictureService;
 import com.egg.library.util.pagination.RenderPages;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -103,14 +104,16 @@ public class AuthorController {
     public final String AUTHORS_UPLOADED_FOLDER = "src/main/resources/static/images/authors/";
     @PostMapping(value = "/save")
     @PreAuthorize("hasRole('ADMIN')")
-    public RedirectView saveAuthor(@RequestParam String name, @RequestParam(required=false) MultipartFile picture, RedirectAttributes attributes){
+    public RedirectView saveAuthor(@RequestParam String name, @RequestParam(required = false)@Value("${picture.value:@null}") MultipartFile picture, RedirectAttributes attributes){
 
         RedirectView redirectView = new RedirectView("/authors/all");
         try {
             AuthorVO authorVO = authorService.createAuthor(name);
             Integer id = authorVO.getIdAuthor();
-            PictureVO pictureVO = pictureService.createPicture(AUTHORS_UPLOADED_FOLDER, String.valueOf(id), name, picture);
-            authorService.updatePicture(pictureVO, authorVO);
+            if(picture != null && !picture.isEmpty()) {
+                PictureVO pictureVO = pictureService.createPicture(AUTHORS_UPLOADED_FOLDER, String.valueOf(id), name, picture);
+                authorService.updatePicture(pictureVO, authorVO);
+            }
             attributes.addFlashAttribute("success-name","El autor ha sido creado exitosamente");
         }catch (Exception e){
             attributes.addFlashAttribute("error-name",e.getMessage());
@@ -121,21 +124,23 @@ public class AuthorController {
 
     @PostMapping(value = "/saveModifications")
     @PreAuthorize("hasRole('ADMIN')")
-    public RedirectView saveChangesAuthor(@RequestParam("name") String name, @RequestParam("idAuthor") Integer idAuthor, @RequestParam(required=false) MultipartFile picture,
+    public RedirectView saveChangesAuthor(@RequestParam("name") String name, @RequestParam("idAuthor") Integer idAuthor, @RequestParam(required=false) @Value("${picture.value:@null}") MultipartFile picture,
                                           RedirectAttributes attributes){
 
         RedirectView redirectView = new RedirectView("/authors/all");
         try {
+
+            AuthorVO authorVO = authorService.updateAuthor(name, idAuthor);
+
             PictureVO pictureVO = authorService.findById(idAuthor).getPicture();
-            if (picture != null) {
+            if (picture != null && !picture.isEmpty()) {
                 if (pictureVO == null) {
                     pictureVO = pictureService.createPicture(AUTHORS_UPLOADED_FOLDER, String.valueOf(idAuthor), name, picture);
                 } else {
                     pictureVO = pictureService.updatePicture(pictureVO, AUTHORS_UPLOADED_FOLDER, String.valueOf(idAuthor), name, picture);
                 }
+                authorService.updatePicture(pictureVO, authorVO);
             }
-            AuthorVO authorVO = authorService.updateAuthor(name, idAuthor);
-            authorService.updatePicture(pictureVO, authorVO);
 
             attributes.addFlashAttribute("success-name","El autor ha sido actualizado exitosamente");
         }catch(Exception e){

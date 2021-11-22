@@ -52,13 +52,12 @@ public class PrestamoRepository implements LoanVORepository {
 
     @Override
     public List<LoanVO> getLoansByBook(Long isbnBook) {
-        //return loanMapper.toLoanVO(prestamoDAO.findByLibro(loanMapper));
-        return null;
+        return loanMapper.toLoanVO(prestamoDAO.findByLibro(isbnBook));
     }
 
     @Override
     public List<LoanVO> getLoansByCustomer(Integer idCoustomer) {
-        return null;
+        return loanMapper.toLoanVO(prestamoDAO.findByCliente(idCoustomer));
     }
 
     @Override

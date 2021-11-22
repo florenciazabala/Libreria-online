@@ -26,8 +26,8 @@
             <input type="number" name="isbn1" id="isbn1" min="1000000000000" max="9999999999999" class="example-popover isbn isbn3 text-center"
                    th:field="*{isbn}" th:readonly="${book.isbn != null}" data-toggle="popover" data-img="/images/isbn.png" title="Formato ISBN" required >
           </label><br>
-          <label class="mb-3">Título <input type="text" name="titulo" id="" th:field="*{title}" required> </label><br>
-          <label class="mb-3">Año <input type="number" name="año" id="" th:field="*{year}" required> </label><br>
+          <label class="mb-3">Título <input type="text" name="titulo"  th:field="*{title}" required> </label><br>
+          <label class="mb-3">Año <input type="number" name="año"  th:field="*{year}" required> </label><br>
           <label class="mb-3" for="#genero">Genero</label>
           <select name="genero" id="genero" th:with="genero=*{genre}">
             <option th:each="genre : ${T(com.egg.library.util.Genre).values()}"
@@ -37,7 +37,7 @@
           </select></br>
 
           <label class="mb-3" for="#autor">Autor </label>
-          <select name="author" class="oS" id="autor" th:with="author=*{author}">
+          <select name="author" id="autor" th:with="author=*{author}">
             <option th:each="author : ${authors}"
                     th:value="${author.idAuthor}"
                     th:text="${author.name}"
@@ -45,7 +45,7 @@
           </select><br>
 
           <label class="mb-3" for="#editorial">Editorial</label>
-          <select name="editorial" class="oS" id="editorial" th:with="editorial=*{editorial}">
+          <select name="editorial" id="editorial" th:with="editorial=*{editorial}">
             <option th:each="editorial : ${editorials}"
                     th:value="${editorial.id}"
                     th:text="${editorial.name}"
@@ -58,13 +58,8 @@
             <input type="number" name="copy" id="copy" max="999" value=1 th:field="*{copy}" onchange="getCopyes()" required >
           </label><br>
           <label class="mb-3" >Ejemplares en préstamo
-            <input type="number" name="loanedcopy" id="loanedcopy" max="999" th:field="*{loanedCopy}" required >
+            <select name="loanedcopy"  id="mySelect" th:field="*{loanedCopy}" required></select>
           </label><br>
-          <!--
-          <select  id="selectCopyes" onclick="countCopies()">
-            <option th:each="i : ${#numbers.sequence(0, countCopies())}" th:value="${i}" th:text="${i}"></option>
-          </select><br>-->
-          <select id="mySelect"></select>
           <hr>
           <button type="submit" class="btn btn-primary mt-3 mb-3" th:text="${action == 'save'} ? 'Ingresar libro' : 'Guardar cambios'"></button>
         </fieldset>
@@ -114,8 +109,11 @@ $(document).ready(function(){
 function getCopyes(){
   var max = document.getElementById("copy").value;
   var min = 0;
+
+  $('#mySelect').empty()
  for (i = min; i <= max; i++){
-     $('#mySelect').append($('<option>',
+     $('#mySelect')
+     .append($('<option>',
      {
         value: i,
         text : ""+i

@@ -11,11 +11,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EntityListeners(AuditingEntityListener.class)
+
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name="autores")
+@EntityListeners(AuditingEntityListener.class)
 public final class Autor {
 
     @Id

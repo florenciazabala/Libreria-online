@@ -263,6 +263,7 @@ footer{
      background: #CCC;
      overflow: hidden;
 }
+
 @supports(object-fit: cover){
     .round-image-container-cutomerLoans img{
       height: 100%;

@@ -51,13 +51,13 @@ public class LoanService {
     }
 
     @Transactional(readOnly = true)
-    public List<LoanVO>  findLoansByCustomer(CustomerVO customerVO){
-        return loanVORepository.getLoansByCustomer(customerVO.getId());
+    public List<LoanVO>  findLoansByCustomer(Integer id){
+        return loanVORepository.getLoansByCustomer(id);
     }
 
     @Transactional(readOnly = true)
-    public List<LoanVO>  findLoansByBook(BookVO bookVO){
-        return loanVORepository.getLoansByBook(bookVO.getIsbn());
+    public List<LoanVO> findLoansByBook(Long isbn){
+        return loanVORepository.getLoansByBook(isbn);
     }
 
     @Transactional
@@ -70,8 +70,8 @@ public class LoanService {
             throw new FieldInvalidException("No copies of the book '" + bookVO.getTitle() + "' are available for load");
         }
         setDates(loanDate,returnDate,bookVO,customerVO);
-        loanVORepository.createLoan(loanVO);
-        mailNotificationService.sendMail("Nuevo préstamo registrado",loanVO,loanVO.getCustomer().getMail());
+        loanVO = loanVORepository.createLoan(loanVO);
+        mailNotificationService.sendMail("Nuevo préstamo registrado",loanVO,loanVO.getCustomer().getUser().getMail());
     }
 
     @Transactional

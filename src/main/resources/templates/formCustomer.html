@@ -35,10 +35,10 @@
                     <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
                     <label class="mb-3">Nombre de usuario <input type="text" name="username" th:value="${username}"  required> </label><br>
                     <label class="mb-3">Contraseña <input type="password" name="password" th:value="${password}" required> </label><br>
-                    <!--<div class="mb-3" >
+                    <div class="mb-3" >
                         <label for="picture" class="form-label">Foto de perfil</label>
                         <input class="form-control" type="file" id="picture" th:name="picture" th:value="${picture}">
-                    </div>-->
+                    </div>
                     <h6>Roles</h6>
                     <div th:each="rol : ${roles}" class="form-check">
                         <input th:id="${rol.role}" th:name="rolChecked" th:value="${rol.role}"
