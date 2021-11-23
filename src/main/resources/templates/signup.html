@@ -32,7 +32,7 @@
                     <label class="mb-3">Mail <input type="email" name="mail" id="mail" th:value="${mail}" required> </label><br>
                     <label class="mb-3">Teléfono <input type="text" name="telephone" th:value="${telephone}" required> </label><br>
                     <label class="mb-3">Nombre de usuario <input type="text" name="username" id="username" th:value="${username}"  required> </label><br>
-                    <p id="textVerify"></p>
+                    <i id="iconVerify"></i><p id="textVerify" style="display: inline;"></p></br>
 
                     <label class="mb-3">Contraseña <input id="password" type="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" name="password" th:value="${password}" required> </label><br>
                     <div id="regex" style="display: none;">
@@ -154,6 +154,16 @@ function sendData() {
 
 function textVerify(message) {
 	$("#textVerify").text(" " + message + "");
+
+    if(message == "The username already exists"){
+	    $("#textVerify").css('color', 'red');
+	    $("#iconVerify").attr('class','fas fa-times');
+	    $("#iconVerify").css('color', 'red');
+	}else{
+         $("#textVerify").css('color', '#34BE82');
+         $("#iconVerify").attr('class','fas fa-check');
+         $("#iconVerify").css('color', '#34BE82');
+    }
 }
 
 $(function() {
