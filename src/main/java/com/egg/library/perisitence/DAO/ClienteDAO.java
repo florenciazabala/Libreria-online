@@ -30,4 +30,18 @@ public interface ClienteDAO extends JpaRepository<Cliente,Integer> {
 
     @Query("SELECT c FROM Cliente c WHERE c.usuario.mail = :mail")
     Optional<Cliente> findByUserMail(@Param("mail") String mail);
+
+    @Modifying
+    @Query(value = "INSERT INTO clientes_libros (cliente_id, libro_isbn) VALUES (:clienteId, :libroIsbn)",nativeQuery = true)
+    void addFavorite(@Param("clienteId")Integer id,@Param("libroIsbn") Long isbn);
+    @Modifying
+    @Query(value = "DELETE FROM clientes_libros WHERE cliente_id= :clienteId AND libro_isbn = :libroIsbn",nativeQuery = true)
+    void removeFavorite(@Param("clienteId")Integer clienteId,@Param("libroIsbn") Long isbn);
+
+    @Query(value = "SELECT libro_isbn FROM clientes_libros WHERE cliente_id= :clienteId",nativeQuery = true)
+    List<Long> getFavoriteBooksByClient(@Param("clienteId")Integer clienteId);
+    @Query(value = "SELECT liente_id FROM clientes_libros WHERE libro_isbn = :libroIsbn",nativeQuery = true)
+    List<Integer> getFavoriteBooksByBook(@Param("libroIsbn") Long isbn);
+    @Query( value = "SELECT count(*) FROM  clientes_libros WHERE EXISTS( SELECT * FROM  clientes_libros  WHERE cliente_id= :clienteId AND libro_isbn = :libroIsbn) LIMIT 1", nativeQuery = true)
+    Integer existsRelation(@Param("clienteId") Integer clienteId, @Param("libroIsbn")Long libroIsbn);
 }

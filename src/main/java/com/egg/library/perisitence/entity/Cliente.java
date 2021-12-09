@@ -3,6 +3,8 @@ package com.egg.library.perisitence.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -38,6 +40,15 @@ public final class Cliente {
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Prestamo> prestamos;
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(
+            name = "clientes_libros",
+            joinColumns = @JoinColumn(name = "cliente_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name="libro_isbn", nullable = false)
+    )
+    @ManyToMany
+    private List<Libro> librosFavoritos;
 
     @OneToOne
     private Usuario usuario;

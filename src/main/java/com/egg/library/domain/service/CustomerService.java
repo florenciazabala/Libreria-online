@@ -108,4 +108,29 @@ public class CustomerService {
         customerVORepository.updateCustomer(customerVO);
         userService.discharge(customerVO.getUser().getId());
     }
+
+    @Transactional
+    public void addFavorite(Integer coustomerId,Long isbn){
+
+        if(!customerVORepository.existsRelationFavoriteBook(coustomerId,isbn)){
+            customerVORepository.addFavorite(coustomerId,isbn);
+        }
+    }
+
+    @Transactional
+    public void removeFavorite(Integer coustomerId,Long isbn){
+        if(customerVORepository.existsRelationFavoriteBook(coustomerId,isbn)){
+            customerVORepository.removeFavorite(coustomerId,isbn);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean existsRelationFavoriteBook(Integer coustomerId,Long isbn){
+        return customerVORepository.existsRelationFavoriteBook(coustomerId,isbn);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> findFavoritesBooksByclient(Integer coustomerId){
+        return customerVORepository.findFavoritesBooks(coustomerId);
+    }
 }

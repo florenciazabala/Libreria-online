@@ -4,6 +4,7 @@ import com.egg.library.domain.PictureVO;
 import com.egg.library.domain.repository.PictureVORepository;
 import com.egg.library.exeptions.ConflictException;
 import com.egg.library.exeptions.FieldInvalidException;
+import com.egg.library.exeptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,5 +109,33 @@ public class PictureService {
     @Transactional(readOnly = true)
     public PictureVO getByPath(String path){
         return pictureVORepository.getByPath(path).orElseThrow(()-> new NoSuchElementException("Picture not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] obtenerFotoPorId(Integer id){
+
+        PictureVO pictureVO = pictureVORepository.getById(id).orElseThrow(()->new NoSuchElementException(""));
+
+        if(pictureVO == null){
+            throw new NotFoundException("La se halló ninguna imagen con el id '"+id+"'");
+        }
+
+        String ruta = pictureVO.getPath();
+
+        try {
+            String fileName = "src/main/resources/static"+ruta;
+            Path path = Paths.get(fileName);
+            File f = path.toFile();
+            if (!f.exists()) {
+                throw new ConflictException("La imagen no fue encontrada");
+            }
+
+            byte[] image = Files.readAllBytes(path);
+            return image;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ConflictException("Error al mostrar imagen");
+        }
     }
 }

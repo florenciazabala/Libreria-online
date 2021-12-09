@@ -48,6 +48,9 @@
                         </tr>
                     </table>
                 </div>
+                <div sec:authorize="hasRole('USER')" class="col-md-1 align-self-center justify-self-end">
+                    <i th:classappend="${#lists.contains(favoriteBooks, #strings.toString(__${book.isbn + 'L'}__))} ? 'fas fa-heart fa-lg m-4' : 'far fa-heart fa-lg m-4'" th:id="favorite+__${book.isbn}__" th:onclick="'javascript:checkFavorite(' + ${book.isbn} + ')'"  style="display: block;" class="buttonBook"></i>
+                </div>
                 <div sec:authorize="hasRole('ADMIN')" class="col-md-1 align-self-center justify-self-end">
                     <a th:href="@{/books/update/__${book.isbn}__}" class="buttonBook"><i class="fas fa-edit fa-lg m-4" style="display: block;"></i></a>
                     <a th:href="${book.discharged == true} ? @{/books/delete/__${book.isbn}__}:@{/books/discharge/__${book.isbn}__}" class="buttonBook"><i th:classappend="${book.discharged == true} ? 'fas fa-trash-alt fa-lg m-4' : 'fas fa-upload fa-lg m-4'" class="" style="display: block;"></i></a>
@@ -94,6 +97,7 @@
 </div>
 <footer th:replace="../static/layouts/layout :: footer"></footer>
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script th:inline="javascript">
     var genreCanvas = document.getElementById("genreChart");
     var genres = []
@@ -110,7 +114,7 @@
 
     /*]]>*/
 
-console.log(genresPercent)
+
     var genreData = {
         labels: genres ,
         datasets: [
@@ -164,6 +168,25 @@ console.log(genresPercent)
     function searcher(){
         var valueSearch = document.getElementById('search').value
         window.location = "/books?search="+valueSearch
+    }
+
+
+    function checkFavorite(isbn){
+        var iconHeart = document.getElementById('favorite'+isbn);
+
+        if(iconHeart.className == 'buttonBook far fa-heart fa-lg m-4'){
+            iconHeart.className = 'buttonBook fas fa-heart fa-lg m-4';
+            $.ajax({
+                type: 'GET',
+                url:'/customers/addFavorite/'+isbn
+            });
+        }else{
+            iconHeart.className = 'buttonBook far fa-heart fa-lg m-4';
+            $.ajax({
+                type: 'GET',
+                url:'/customers/removeFavorite/'+isbn
+            });
+        }
     }
 
 

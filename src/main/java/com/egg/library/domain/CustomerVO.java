@@ -3,11 +3,13 @@ package com.egg.library.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -31,4 +33,7 @@ public final class CustomerVO {
     private UserVO user;
 
     private PictureVO picture;
+
+    @Nullable
+    private List<BookVO> favoriteBooks;
 }

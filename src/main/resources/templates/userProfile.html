@@ -80,7 +80,8 @@
     </div>
 
     <div  class="row justify-content-center mb-5" style="min-height: 30rem;">
-        <div class="col col-md-10 m-5 p-5 text-center" id="panelLoadsDetail">
+
+        <div class="col col-7  m-3 p-5 text-center" id="panelLoadsDetail">
             <h6>Préstamos</h6><br>
             <div class="alert alert-secondary" role="alert" th:if="${loans.isEmpty()}">
                 <h5>Todavía no hay préstamos cargados.<a th:href="@{/loans/create}">Ingresar préstamo.</a></h5>
@@ -88,7 +89,7 @@
             <div class="row justify-content-center align-content-center">
                 <div class="col-auto mt-4 mb-4">
                     <table class="table table-responsive justify-self-center" th:unless="${loans.isEmpty()}">
-                        <thead class="table-dark">
+                        <thead class="table-secondary">
                         <tr>
                             <th scope="col">Id</th>
                             <th scope="col">Alta</th>
@@ -117,8 +118,41 @@
                 </div>
             </div>
         </div>
+
+        <div class="col col-4 m-3 p-5 text-center" id="panelLoadsDetail">
+            <h6>Libros favoritos</h6><br>
+            <div class="alert alert-secondary" role="alert" th:if="${customer.favoriteBooks} == null OR ${customer.favoriteBooks.isEmpty()}">
+                <h5>Todavía no hay libros marcados como favoritos</h5>
+            </div>
+            <div class="row justify-content-center align-content-center">
+                <div class="col-auto mt-4 mb-4">
+                    <table class="table table-responsive justify-self-center" th:unless="${customer.favoriteBooks} == null OR ${customer.favoriteBooks.isEmpty()}">
+                        <thead class="table-secondary">
+                        <tr>
+                            <th scope="col">Título</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+
+                        </tbody>
+                        <tr th:each="book : ${customer.favoriteBooks}">
+                            <td  th:text="${book.title}"></td>
+                            <td  th:text="${book.author.name}"></td>
+                            <td>
+                                <a th:href="@{/books/__${book.isbn}__}" class="buttonBook"><i class="far fa-eye fa-lg"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
+
 <footer th:replace="../static/layouts/layout :: footer"></footer>
 <script>
 

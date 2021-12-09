@@ -143,6 +143,8 @@ public class UserService implements UserDetailsService {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpSession  session = attributes.getRequest().getSession(true);
         session.setAttribute("userSession",customerVO);
+        session.setAttribute("favoriteBooks",customerVO.getFavoriteBooks());
+        session.setAttribute("idCustommerLogged",customerVO.getId());
 
         List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
 
@@ -179,6 +181,5 @@ public class UserService implements UserDetailsService {
         }
         userRepository.discharge(id);
     }
-
 
 }

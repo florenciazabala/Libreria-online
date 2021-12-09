@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Mapper(componentModel = "spring",uses={UserMapper.class,LoanMapper.class,PictureMapper.class})
+@Mapper(componentModel = "spring",uses={UserMapper.class,LoanMapper.class,PictureMapper.class,BookMapper.class})
 public interface CustomerMapper {
     @Mappings({
             @Mapping(source = "documento",target = "document"),
@@ -23,7 +23,8 @@ public interface CustomerMapper {
             @Mapping(source = "alta",target = "discharged"),
             @Mapping(source = "prestamos",target = "loans"),
             @Mapping(source = "usuario",target = "user"),
-            @Mapping(source = "foto",target = "picture")
+            @Mapping(source = "foto",target = "picture"),
+            @Mapping(source = "librosFavoritos",target = "favoriteBooks")
     })
     CustomerVO toCustomerVO(Cliente cliente);
     List<CustomerVO> toCustomerVO(List<Cliente> cliente);

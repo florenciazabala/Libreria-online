@@ -1,7 +1,7 @@
-package com.egg.library;
+package com.egg.library.web.sockets;
 
 import com.egg.library.domain.UserVO;
-import com.egg.library.domain.service.UserService;
+import com.egg.library.domain.service.CustomerService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
-public class SocketTextHandler extends TextWebSocketHandler {
+public class SocketFavoriteBook extends TextWebSocketHandler {
 
     @Autowired
-    private UserService userService;
+    private CustomerService customerService;
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message)
             throws InterruptedException, IOException {
-
+        /*
         String payload = message.getPayload();
         JSONObject jsonObject = new JSONObject(payload);
         Optional<UserVO> user =  userService.findByUsername(""+jsonObject.get("user"));
@@ -29,8 +29,7 @@ public class SocketTextHandler extends TextWebSocketHandler {
             session.sendMessage(new TextMessage("The username already exists"));
         }else{
             session.sendMessage(new TextMessage("The username is avaible!"));
-        }
+        }*/
 
     }
-
 }

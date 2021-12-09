@@ -2,6 +2,7 @@ package com.egg.library.perisitence.repository;
 
 import com.egg.library.domain.CustomerVO;
 import com.egg.library.domain.PictureVO;
+import com.egg.library.domain.UserVO;
 import com.egg.library.domain.repository.CustomerVORepository;
 import com.egg.library.perisitence.DAO.ClienteDAO;
 import com.egg.library.perisitence.entity.Cliente;
@@ -62,5 +63,29 @@ public class ClienteRepository implements CustomerVORepository {
     @Override
     public List<CustomerVO> getAllCustomers() {
         return customerMapper.toCustomerVO(clienteDAO.findAll());
+    }
+
+    @Override
+    public void addFavorite(Integer idCustomer, Long isbn) {
+        clienteDAO.addFavorite(idCustomer,isbn);
+    }
+
+    @Override
+    public void removeFavorite(Integer idCustomer, Long isbn) {
+        clienteDAO.removeFavorite(idCustomer,isbn);
+    }
+
+    @Override
+    public List<Long> findFavoritesBooks(Integer idCustomer) {
+        return clienteDAO.getFavoriteBooksByClient(idCustomer);
+    }
+
+    @Override
+    public Boolean existsRelationFavoriteBook(Integer idCustomer, Long isbn) {
+       if(clienteDAO.existsRelation(idCustomer,isbn)>0){
+           return true;
+       }else {
+           return false;
+       }
     }
 }

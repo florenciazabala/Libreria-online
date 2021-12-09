@@ -1,18 +1,14 @@
 package com.egg.library.web.controller;
 
 
-import com.egg.library.domain.AuthorVO;
-import com.egg.library.domain.BookVO;
-import com.egg.library.domain.EditorialVO;
-import com.egg.library.domain.LoanVO;
-import com.egg.library.domain.service.AuthorService;
-import com.egg.library.domain.service.BookService;
-import com.egg.library.domain.service.EditorialService;
-import com.egg.library.domain.service.LoanService;
+import com.egg.library.domain.*;
+import com.egg.library.domain.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +39,21 @@ public class BookController {
     @Autowired
     private LoanService loanService;
 
+    @Autowired
+    private CustomerService customerService;
+
+    public CustomerVO getCustomerLogged(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String mail;
+        if (principal instanceof UserDetails){
+            mail = ((UserDetails) principal).getUsername();
+        }else{
+            mail = principal.toString();
+        }
+
+        return customerService.findByUserMail(mail);
+    }
+
     @GetMapping(value = "/all")
     public ModelAndView showBooks(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
@@ -57,50 +67,62 @@ public class BookController {
         mav.addObject("books",  bookService.findAllBooks());
         mav.addObject("title","Listado de libros");
         mav.addObject("checked",false);
+        addModelFavoriteBooks(request,mav);
         return mav;
     }
 
     @GetMapping(value = "",params = "genero")
-    public ModelAndView showByGenre(@RequestParam("genero") String genero){
+    public ModelAndView showByGenre(@RequestParam("genero") String genero,HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findByGenre(genero));
         mav.addObject("title","Listado de libros del género '"+genero+"' ");
+        addModelFavoriteBooks(request,mav);
         return mav;
     }
 
     @GetMapping("/dismiss")
-    public ModelAndView showDismissbooks(){
+    public ModelAndView showDismissbooks(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findDismissBooks());
         mav.addObject("title","Listado de libros dados de baja");
+        addModelFavoriteBooks(request,mav);
         return mav;
     }
 
     @GetMapping("/avaible")
-    public ModelAndView showAvaibleToLoan(){
+    public ModelAndView showAvaibleToLoan(HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAvaibleBooks());
         mav.addObject("checked",true);
         mav.addObject("title","Listado de libros disponibles de alquilar");
+        addModelFavoriteBooks(request,mav);
         return mav;
     }
 
     @GetMapping(value = "",params = "search")
-    public ModelAndView showByAllFields(@RequestParam("search") String search){
+    public ModelAndView showByAllFields(@RequestParam("search") String search,HttpServletRequest request){
         ModelAndView mav = new ModelAndView("books");
         mav.addObject("books",  bookService.findAllFields(search));
         mav.addObject("title","Listado de libros");
+        addModelFavoriteBooks(request,mav);
         return mav;
     }
 
     @GetMapping (value = "/{isbn}")
-    public ModelAndView shearchById(@PathVariable Long isbn){
+    public ModelAndView shearchById(@PathVariable Long isbn,HttpServletRequest request){
         ModelAndView mav = new ModelAndView("bookDetail");
         mav.addObject("book",bookService.findByIsbn(isbn));
         List<Integer> loansId = bookService.findByIsbn(isbn).getLoans().keySet().stream().collect(Collectors.toList());
         List<LoanVO> loanVOS = loansId.stream().map(l -> loanService.findById(l)).collect(Collectors.toList());
         mav.addObject("loans",loanVOS);
+        addModelFavoriteBooks(request,mav);
         return mav;
+    }
+
+    public void addModelFavoriteBooks(HttpServletRequest request, ModelAndView mav){
+        List<BookVO> favoritesBooks = getCustomerLogged().getFavoriteBooks();
+        List<String> isbnFavoritesBooks = favoritesBooks.stream().map(b -> b.getIsbn()+"").collect(Collectors.toList());
+        mav.addObject("favoriteBooks", isbnFavoritesBooks);
     }
 
     @GetMapping(value = "/create")
@@ -195,7 +217,6 @@ public class BookController {
         bookService.discharge(isbn);
         return new RedirectView("/books/all");
     }
-
 
     @EventListener(ContextRefreshedEvent.class)
     public void contextRefreshedEvent() {

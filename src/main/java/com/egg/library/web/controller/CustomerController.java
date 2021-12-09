@@ -7,9 +7,12 @@ import com.egg.library.domain.service.RolService;
 import com.egg.library.domain.service.UserService;
 import com.egg.library.exeptions.FieldAlreadyExistException;
 import com.egg.library.exeptions.FieldInvalidException;
+import com.egg.library.exeptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +42,18 @@ public class CustomerController {
 
     @Autowired
     private PictureService pictureService;
+
+    public CustomerVO getCustomerLogged(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String mail;
+        if (principal instanceof UserDetails){
+           mail = ((UserDetails) principal).getUsername();
+        }else{
+            mail = principal.toString();
+        }
+
+        return customerService.findByUserMail(mail);
+    }
 
     @GetMapping(value = "/all")
     public ModelAndView showCustomers(HttpServletRequest request){
@@ -204,4 +219,18 @@ public class CustomerController {
         return new RedirectView("/customers/all");
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/addFavorite/{isbn}")
+    public void addFavorite(@PathVariable String isbn){
+        CustomerVO customerVO = getCustomerLogged();
+        System.out.println("Libro agregado: "+isbn);
+        customerService.addFavorite(customerVO.getId(),Long.parseLong(isbn));
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(value = "/removeFavorite/{isbn}")
+    public void removeFavorite(@PathVariable String isbn){
+        CustomerVO customerVO = getCustomerLogged();
+        customerService.removeFavorite(customerVO.getId(),Long.parseLong(isbn));
+    }
 }
