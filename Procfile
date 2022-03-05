@@ -1,1 +1,1 @@
-web: java -jar -Dspring.profiles.active=pdn target/library-0.0.1-SNAPSHOT.jar -Xmx256m -XX:+UseContainerSupport
+web: java -Xmx300m -Xms300m -XX:+UseContainerSupport -jar -Dspring.profiles.active=pdn target/library-0.0.1-SNAPSHOT.jar
