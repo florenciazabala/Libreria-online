@@ -1,0 +1,8 @@
+*.html
+*.css
+*.jpg
+*.js
+*.mp4
+/test
+/spec
+*./static
