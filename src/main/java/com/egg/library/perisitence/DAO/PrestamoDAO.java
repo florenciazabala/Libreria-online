@@ -22,20 +22,20 @@ public interface PrestamoDAO extends JpaRepository<Prestamo,Integer> {
                 @Param("alta")Boolean alta,@Param("libro")Libro libro,@Param("cliente")Cliente cliente,
                 @Param("id")Integer id);
 
-    @Query("SELECT p FROM Prestamo p WHERE p.alta =1")
+    @Query("SELECT p FROM Prestamo p WHERE p.alta =TRUE")
     List<Prestamo> findAll();
 
-    @Query(value = "SELECT * FROM prestamos p WHERE p.libro_isbn = :libro AND p.alta =1",nativeQuery = true)
+    @Query(value = "SELECT * FROM prestamos p WHERE p.libro_isbn = :libro AND p.alta =TRUE",nativeQuery = true)
     List<Prestamo> findByLibro(@Param("libro") Long isbnLibro);
 
-    @Query(value = "SELECT * FROM prestamos p WHERE p.cliente_id = :cliente AND p.alta =1",nativeQuery = true)
+    @Query(value = "SELECT * FROM prestamos p WHERE p.cliente_id = :cliente AND p.alta =TRUE",nativeQuery = true)
     List<Prestamo> findByCliente(@Param("cliente") Integer isCustomer);
 
     //Uso una query nativa para no tener que mapear los objetos libro y cliente y facilitar el desacoplamiento
-    @Query(value = "SELECT * FROM prestamos p WHERE p.libro_isbn = :libro AND p.cliente_id = :cliente AND p.alta =1",nativeQuery = true)
+    @Query(value = "SELECT * FROM prestamos p WHERE p.libro_isbn = :libro AND p.cliente_id = :cliente AND p.alta =TRUE",nativeQuery = true)
     Optional<Prestamo> findByLibroAndCliente(@Param("libro") Long isbnLibro, @Param("cliente") Integer idCliente);
 
-    @Query("SELECT p FROM Prestamo p WHERE p.fechaPrestamo = :fechaPrestamo AND p.alta =1")
+    @Query("SELECT p FROM Prestamo p WHERE p.fechaPrestamo = :fechaPrestamo AND p.alta =TRUE")
     List<Prestamo> findByFechaPrestamo(@Param("fechaPrestamo") LocalDate fechaPrestamo);
 
     @Query("SELECT p FROM Prestamo p WHERE p.alta =1 AND p.fechaDevolucion BETWEEN :desdeFechaDevolucion AND :hastaFechaDevolucion ")

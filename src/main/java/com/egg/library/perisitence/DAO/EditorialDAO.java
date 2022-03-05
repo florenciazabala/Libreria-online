@@ -16,7 +16,7 @@ public interface EditorialDAO extends JpaRepository<Editorial,Integer> {
     @Query("UPDATE Editorial e SET e.nombre = :nombre, e.alta= :alta WHERE e.id= :id")
     public void update(@Param("nombre") String nombre, @Param("alta") Boolean alta, @Param("id") Integer id);
 
-    @Query("SELECT e FROM Editorial e WHERE e.alta=1")
+    @Query("SELECT e FROM Editorial e WHERE e.alta=TRUE")
     List<Editorial> findAll();
 
     @Query("SELECT e FROM Editorial e WHERE e.nombre = :nombre")

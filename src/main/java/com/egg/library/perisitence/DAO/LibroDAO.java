@@ -27,16 +27,16 @@ public interface LibroDAO extends JpaRepository<Libro,Long> {
 
 
 
-    @Query("SELECT l FROM Libro l WHERE l.alta=1")
+    @Query("SELECT l FROM Libro l WHERE l.alta=TRUE")
     List<Libro> findAll();
 
     @Query("SELECT l FROM Libro l WHERE CONCAT_WS(l.isbn,l.titulo,l.anio,l.genero,l.autor.nombre,l.editorial.nombre) LIKE %:search%")
     List<Libro> findByAllFields(@Param("search") String search);
 
-    @Query("SELECT l FROM Libro l WHERE l.titulo LIKE %:titulo% AND l.alta=1")
+    @Query("SELECT l FROM Libro l WHERE l.titulo LIKE %:titulo% AND l.alta=TRUE")
     List<Libro> findByTitulo(@Param("titulo") String titulo);
 
-    @Query("SELECT l FROM Libro l WHERE l.genero = :genero AND l.alta=1")
+    @Query("SELECT l FROM Libro l WHERE l.genero = :genero AND l.alta=TRUE")
     List<Libro> findByGenero(@Param("genero") Genre genero);
 
     @Query("SELECT l FROM Libro l WHERE l.autor.id= :autorId")
@@ -48,15 +48,15 @@ public interface LibroDAO extends JpaRepository<Libro,Long> {
     @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo AND l.autor.id= :autorId")
     Optional<Libro> findByTitleAndAuthor(@Param("titulo")String titulo, @Param("autorId") Integer autorId);
 
-    @Query("SELECT l FROM Libro l WHERE l.alta=0")
+    @Query("SELECT l FROM Libro l WHERE l.alta=FALSE")
     List<Libro> findDismissBooks();
 
     @Query("SELECT l FROM Libro l WHERE l.ejemplaresRestantes>0")
     List<Libro> findAvaiblesBooks();
 
     @Query(value = "SELECT (SELECT COUNT(l.isbn)  FROM libros l WHERE l.genero= :genero) / " +
-            "T.total *100 FROM libros l " +
-            "CROSS JOIN (SELECT COUNT(l.isbn) as total  FROM libros l) T " +
-            "WHERE l.genero= :genero GROUP BY l.genero", nativeQuery = true)
+            "t.total *100 FROM libros l " +
+            "CROSS JOIN (SELECT COUNT(l.isbn) as total  FROM libros l) t " +
+            "WHERE l.genero= :genero GROUP BY l.genero, t.total", nativeQuery = true)
     BigDecimal getPorcentajeGenero(@Param("genero") int genero);
 }

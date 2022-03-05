@@ -19,7 +19,7 @@ import java.util.List;
 public final class Autor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @Column(nullable = false, unique = true)
     private String nombre;
@@ -27,7 +27,7 @@ public final class Autor {
     private Boolean alta;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "autor",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "autor")
     private List<Libro> libros;
 
     @OneToOne(fetch = FetchType.EAGER)

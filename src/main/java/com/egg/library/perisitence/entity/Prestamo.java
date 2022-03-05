@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public final class Prestamo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @Column(nullable = false)
     private LocalDate fechaPrestamo;

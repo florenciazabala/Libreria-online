@@ -23,7 +23,7 @@ public interface ClienteDAO extends JpaRepository<Cliente,Integer> {
     @Query("UPDATE Cliente c SET c.foto = :foto WHERE c.id= :id")
     void updateFoto(@Param("foto") Foto foto, @Param("id") Integer id);
 
-    @Query("SELECT c FROM Cliente c WHERE c.alta= 1")
+    @Query("SELECT c FROM Cliente c WHERE c.alta=TRUE")
     List<Cliente> findAll();
 
     Optional<Cliente> findByDocumento(Long documento);
